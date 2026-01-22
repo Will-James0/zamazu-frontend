@@ -1,0 +1,21 @@
+import NavigationHeader from "@/components/NavigationHeader";
+import HeroSection from "@/components/HeroSection";
+import AboutSection from "@/components/AboutSection";
+import DiscographySection from "@/components/DiscographySection";
+import FooterSection from "@/components/FooterSection";
+
+function Home() {
+  return (
+    <div className="min-h-screen bg-background">
+      <NavigationHeader />
+      <main>
+        <HeroSection />
+        <AboutSection />
+        <DiscographySection />
+      </main>
+      <FooterSection />
+    </div>
+  )
+}
+
+export default Home
