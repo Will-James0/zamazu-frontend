@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { 
   Play, Pause, Heart, Share2, Download, Filter, 
-  Calendar, Eye, Clock, Music2, Youtube, Spotify 
+  Calendar, Eye, Clock, Music2, Youtube // Retirez Spotify ici
 } from "lucide-react";
 
 const AllProjectsPage = () => {
@@ -176,14 +176,14 @@ const AllProjectsPage = () => {
         {/* Header flamboyant */}
         <div className="mb-12 text-center">
           <div className="flex items-center justify-center gap-3 mb-6">
-            <div className="w-8 h-px bg-gradient-to-r from-red-500 to-transparent" />
+            <div className="w-8 h-px bg-linear-to-r from-red-500 to-transparent" />
             <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
             <h1 className="text-4xl md:text-5xl font-bold text-white">
               <span className="text-red-400">TOUTE</span>
               <span className="text-gray-300"> L'ŒUVRE</span>
             </h1>
             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse delay-150" />
-            <div className="w-8 h-px bg-gradient-to-r from-transparent to-green-500" />
+            <div className="w-8 h-px bg-linear-to-r from-transparent to-green-500" />
           </div>
           
           <p className="text-gray-400 max-w-2xl mx-auto">
@@ -200,7 +200,7 @@ const AllProjectsPage = () => {
                 onClick={() => setActiveFilter(filter.id)}
                 className={`group px-6 py-3 rounded-full border transition-all duration-300 ${
                   activeFilter === filter.id
-                    ? 'bg-gradient-to-r from-red-600/20 to-green-600/10 border-red-500/30'
+                    ? 'bg-linear-to-r from-red-600/20 to-green-600/10 border-red-500/30'
                     : 'border-gray-800 hover:border-red-500/30'
                 }`}
               >
@@ -233,7 +233,7 @@ const AllProjectsPage = () => {
               {/* Carte projet */}
               <div className={`
                 relative rounded-2xl border border-gray-800 
-                bg-gradient-to-b from-gray-900/50 to-black/80
+                bg-linear-to-b from-gray-900/50 to-black/80
                 backdrop-blur-sm
                 overflow-hidden
                 transition-all duration-500
@@ -248,7 +248,7 @@ const AllProjectsPage = () => {
                   <div className={`absolute top-4 left-4 px-3 py-1 rounded-full ${getTypeGradient(project.type)} border border-gray-800/50`}>
                     <span className={`text-xs font-medium ${getTypeColor(project.type)}`}>
                       {project.type === 'series' ? 'SÉRIE' : 
-                       project.type === 'single' ? 'SINGLE' : 'FREESTYLE'}
+                        project.type === 'single' ? 'SINGLE' : 'FREESTYLE'}
                     </span>
                   </div>
                   
@@ -321,25 +321,41 @@ const AllProjectsPage = () => {
                   {/* Actions */}
                   <div className="flex items-center justify-between border-t border-gray-800 pt-4">
                     <div className="flex gap-3">
-                      <button className="p-2 rounded-lg hover:bg-gray-800/50 transition-colors">
+                      {/* Bouton Like avec label d'accessibilité */}
+                      <button 
+                        title="Ajouter aux favoris"
+                        aria-label="Ajouter aux favoris"
+                        className="p-2 rounded-lg hover:bg-gray-800/50 transition-colors"
+                      >
                         <Heart className="w-5 h-5 text-gray-400 hover:text-red-400" />
                       </button>
-                      <button className="p-2 rounded-lg hover:bg-gray-800/50 transition-colors">
+
+                      {/* Bouton Partager avec label d'accessibilité */}
+                      <button 
+                        title="Partager le projet"
+                        aria-label="Partager le projet"
+                        className="p-2 rounded-lg hover:bg-gray-800/50 transition-colors"
+                      >
                         <Share2 className="w-5 h-5 text-gray-400 hover:text-green-400" />
                       </button>
+
+                      {/* Lien YouTube avec label d'accessibilité */}
                       <a 
                         href={project.youtubeUrl}
                         target="_blank"
+                        rel="noopener noreferrer" // Bonne pratique de sécurité
+                        title="Voir sur YouTube"
+                        aria-label="Voir sur YouTube"
                         className="p-2 rounded-lg hover:bg-gray-800/50 transition-colors"
                       >
                         <Youtube className="w-5 h-5 text-gray-400 hover:text-red-500" />
                       </a>
                     </div>
-                    
-                    <button className="px-4 py-2 rounded-lg bg-gradient-to-r from-gray-800 to-gray-900 border border-gray-700 hover:border-red-500/30 transition-colors text-sm">
-                      <span className="text-gray-300">Détails</span>
-                    </button>
                   </div>
+                  
+                  <button className="px-4 py-2 rounded-lg bg-linear-to-r from-gray-800 to-gray-900 border border-gray-700 hover:border-red-500/30 transition-colors text-sm">
+                    <span className="text-gray-300">Détails</span>
+                  </button>
                 </div>
               </div>
             </div>
