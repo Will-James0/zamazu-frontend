@@ -5,6 +5,12 @@ import Home from '../pages/Home'
 import About from '../pages/About'
 import NotFound from '../pages/NotFound'
 
+import AllProjects from '../pages/AllProjects'
+import Exclusives from '../pages/Exclusives'
+// import Series from '../pages/Series'
+// import Singles from '../pages/Singles'
+// import Freestyles from '../pages/Freestyles'
+
 // Configuration des routes similaire à Vue Router
 const routes = [
   {
@@ -24,7 +30,32 @@ const routes = [
         meta: {
           title: 'À propos'
         }
-      }
+      },
+      {
+        path: 'discography',
+        children: [
+          {
+            path: 'all',
+            component: AllProjects,
+          },
+          {
+            path: 'exclusives',
+            component: Exclusives,
+          },
+          // {
+          //   path: 'series',
+          //   component: Series,
+          // },
+          // {
+          //   path: 'singles',
+          //   component: Singles,
+          // },
+          // {
+          //   path: 'freestyles',
+          //   component: Freestyles,
+          // }
+        ]
+      },
     ]
   },
   {
