@@ -200,16 +200,28 @@ const DiscographySection = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 items-center">
-              <Button 
-                size="lg"
-                className="group relative overflow-hidden bg-gradient-to-r from-black to-gray-900 border border-gray-800 hover:border-red-500/50"
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-red-600/0 via-red-600/10 to-green-600/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="relative flex items-center gap-3 px-6 py-4">
-                  <Disc className="w-4 h-4" />
-                  <span className="text-sm tracking-widest">VOIR TOUT</span>
-                </div>
-              </Button>
+
+<Button 
+  size="lg"
+  className="group relative overflow-hidden bg-gradient-to-r from-black to-gray-900 border border-gray-800 hover:border-red-500/50"
+  onClick={() => window.location.href = "/discography/all"} // ← NOUVEAU
+>
+  <div className="absolute inset-0 bg-gradient-to-r from-red-600/0 via-red-600/10 to-green-600/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+  <div className="relative flex items-center gap-3 px-6 py-4">
+    <Disc className="w-4 h-4" />
+    <span className="text-sm tracking-widest">VOIR TOUT</span>
+  </div>
+</Button>
+
+<Button 
+  variant="ghost" 
+  size="lg"
+  className="text-gray-400 hover:text-white border-0"
+  onClick={() => window.location.href = "/discography/exclusives"} // ← NOUVEAU
+>
+  <Music className="w-4 h-4 mr-2" />
+  <span className="text-sm">Exclusivités</span>
+</Button>
               
               <Button 
                 variant="ghost" 
