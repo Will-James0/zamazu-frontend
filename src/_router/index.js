@@ -11,6 +11,12 @@ import Exclusives from '../pages/Exclusives'
 // import Singles from '../pages/Singles'
 // import Freestyles from '../pages/Freestyles'
 
+// Auth pages
+import AuthHome from '../pages/auth/AuthHome'
+import MemberLogin from '../pages/auth/MemberLogin'
+import StaffLogin from '../pages/auth/StaffLogin'
+import Register from '../pages/auth/Register'
+
 // Configuration des routes similaire à Vue Router
 const routes = [
   {
@@ -57,6 +63,34 @@ const routes = [
         ]
       },
     ]
+  },
+  {
+    path: '/auth',
+    component: AuthHome,
+    meta: {
+      title: 'Authentification'
+    }
+  },
+  {
+    path: '/auth/member-login',
+    component: MemberLogin,
+    meta: {
+      title: 'Connexion Membre'
+    }
+  },
+  {
+    path: '/auth/staff-login',
+    component: StaffLogin,
+    meta: {
+      title: 'Connexion Staff'
+    }
+  },
+  {
+    path: '/auth/register',
+    component: Register,
+    meta: {
+      title: 'Inscription'
+    }
   },
   {
     path: '*',
