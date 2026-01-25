@@ -228,8 +228,7 @@ const DiscographySection = () => {
                 size="lg"
                 className="text-gray-400 hover:text-white border-0"
               >
-                <Music className="w-4 h-4 mr-2" />
-                <span className="text-sm">Exclusivités</span>
+                
               </Button>
             </div>
           </div>
