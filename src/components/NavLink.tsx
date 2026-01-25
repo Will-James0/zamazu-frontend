@@ -1,6 +1,7 @@
 import { NavLink as RouterNavLink, NavLinkProps } from "react-router-dom";
 import { forwardRef } from "react";
-import { cn } from "@/lib/utils";
+// FIX: Utilisation d'un chemin relatif au lieu de l'alias @ qui n'est pas configuré
+import { cn } from "../libs/utils"; 
 
 interface NavLinkCompatProps extends Omit<NavLinkProps, "className"> {
   className?: string;

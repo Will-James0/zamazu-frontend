@@ -13,7 +13,7 @@ import {
   Sparkles,
 } from "lucide-react";
 
-const ExclusivesPage = () => {
+const Exclusives = () => {
   const [playing, setPlaying] = useState(false);
   const [currentTrack, setCurrentTrack] = useState(0);
   const [volume, setVolume] = useState(80);
@@ -148,15 +148,20 @@ const ExclusivesPage = () => {
               <div className="flex items-center justify-center gap-4">
                 <Volume2 className="w-5 h-5 text-gray-400" />
                 <div className="w-48 h-1 bg-gray-800 rounded-full overflow-hidden">
+                  
                   <div
-                    className="h-full bg-linear-to-r from-purple-500 to-pink-500 rounded-full"
-                    style={{ width: `${volume}%` }}
-                  />
-                </div>
+    className={`h-full bg-linear-to-r from-purple-500 to-pink-500 rounded-full ${
+      volume < 25 ? 'w-0' : 
+      volume < 50 ? 'w-1/4' : 
+      volume < 75 ? 'w-1/2' : 
+      volume < 100 ? 'w-3/4' : 'w-full'
+    }`}
+  />
+</div>
                 <span className="text-sm text-gray-400">{volume}%</span>
               </div>
-            </div>
-          </div>
+            </div> {/* Fin du container Controls */}
+          </div> {/* Fin du container Player */}
         </div>
 
         {/* Liste */}
@@ -164,6 +169,7 @@ const ExclusivesPage = () => {
           <h2 className="text-2xl font-bold text-white mb-8">
             Contenu Exclusif
           </h2>
+          {/* ... reste de votre code .map() ... */}
 
           <div className="space-y-4">
             {exclusiveTracks.map((track, index) => (
@@ -235,4 +241,4 @@ const ExclusivesPage = () => {
   );
 };
 
-export default ExclusivesPage;
+export default Exclusives;

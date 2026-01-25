@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { 
-  Play, Pause, Heart, Share2, Download, Filter, 
-  Calendar, Eye, Clock, Music2, Youtube // Retirez Spotify ici
+  Play, Pause, Heart, Share2, Filter, 
+  Calendar, Eye, Clock, Youtube 
 } from "lucide-react";
 
+// Correction ici : On ouvre l'accolade et on commence directement la logique
 const AllProjectsPage = () => {
   const [activeFilter, setActiveFilter] = useState('all');
   const [playingTrack, setPlayingTrack] = useState<string | null>(null);
-
   // DONNÉES DYNAMIQUES (À CONNECTER À LA DB)
   const allProjects = [
     // SAÏ SERIE
@@ -392,4 +392,4 @@ const AllProjectsPage = () => {
   );
 };
 
-export default AllProjectsPage;
+export default AllProjectsPage; // Sans accolades !

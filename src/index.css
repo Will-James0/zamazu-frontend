@@ -110,11 +110,15 @@
 
 @layer components {
   .text-gradient-gold {
-    background-clip: text;
+    /* On place le préfixe en premier */
     -webkit-background-clip: text;
+    /* La propriété standard vient conclure pour avoir le dernier mot */
+    background-clip: text;
+    
     color: transparent;
     background-image: var(--gradient-gold);
   }
+}
 
   .border-gradient-gold {
     border-image: var(--gradient-gold) 1;
@@ -128,7 +132,7 @@
     background: var(--gradient-card);
     box-shadow: var(--shadow-elevation);
   }
-}
+
 
 @layer utilities {
   .animate-fade-up {

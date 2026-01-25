@@ -65,7 +65,7 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-black p-4 py-12">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-gray-900 via-gray-800 to-black p-4 py-12">
       <div className="w-full max-w-2xl">
         <Button
           variant="ghost"

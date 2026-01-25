@@ -5,7 +5,8 @@ import Home from '../pages/Home'
 import About from '../pages/About'
 import NotFound from '../pages/NotFound'
 
-import AllProjects from '../pages/AllProjects'
+// Remplace AllProjects par AllProjectsPage
+import AllProjectsPage from '../pages/AllProjects.tsx';
 import Exclusives from '../pages/Exclusives'
 // import Series from '../pages/Series'
 // import Singles from '../pages/Singles'
@@ -16,7 +17,9 @@ import AuthHome from '../pages/auth/AuthHome'
 import MemberLogin from '../pages/auth/MemberLogin'
 import StaffLogin from '../pages/auth/StaffLogin'
 import Register from '../pages/auth/Register'
-
+import DiscographySection from '../components/DiscographySection'
+// AJOUTE CETTE LIGNE ICI :
+console.log("DEBUG AllProjectsPage:", AllProjectsPage);
 // Configuration des routes similaire à Vue Router
 const routes = [
   {
@@ -42,7 +45,7 @@ const routes = [
         children: [
           {
             path: 'all',
-            component: AllProjects,
+            component: AllProjectsPage,
           },
           {
             path: 'exclusives',
@@ -104,19 +107,27 @@ const routes = [
 // Fonction pour convertir la config en format React Router
 const createRoutes = (routes) => {
   return routes.map(route => {
+    // 1. Préparer l'objet de base
     const routeConfig = {
       path: route.path,
-      element: createElement(route.component),
+    };
+
+    // 2. Ne créer l'élément QUE si le composant existe
+    if (route.component) {
+      routeConfig.element = createElement(route.component);
+    } else if (!route.children) {
+      // Si pas de composant ET pas d'enfants, on log l'erreur pour t'aider
+      console.warn(`Attention: La route "${route.path}" n'a pas de composant défini.`);
     }
-    
-    // Gérer les routes enfants
+
+    // 3. Gérer les routes enfants
     if (route.children) {
-      routeConfig.children = createRoutes(route.children)
+      routeConfig.children = createRoutes(route.children);
     }
-    
-    return routeConfig
-  })
-}
+
+    return routeConfig;
+  });
+};
 
 // Créer le router avec la configuration
 const router = createBrowserRouter(createRoutes(routes))

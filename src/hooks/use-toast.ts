@@ -144,17 +144,18 @@ function toast({ ...props }: Toast) {
     });
   const dismiss = () => dispatch({ type: "DISMISS_TOAST", toastId: id });
 
-  dispatch({
-    type: "ADD_TOAST",
-    toast: {
-      ...props,
-      id,
-      open: true,
-      onOpenChange: (open) => {
-        if (!open) dismiss();
-      },
+ dispatch({
+  type: "ADD_TOAST",
+  toast: {
+    ...props,
+    id,
+    open: true,
+    // FIX: Ajout du type boolean au paramètre 'open'
+    onOpenChange: (open: boolean) => {
+      if (!open) dismiss();
     },
-  });
+  },
+});
 
   return {
     id: id,
