@@ -1,0 +1,362 @@
+export const API_CONFIG = {
+    BASE_URL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api',
+    API_VERSION: import.meta.env.VITE_API_VERSION || 'v1',
+    TIMEOUT: parseInt(import.meta.env.VITE_API_TIMEOUT) || 30000,
+
+    ENDPOINTS: {
+        
+        AUTH : {
+            LOGIN_USER: `${import.meta.env.VITE_API_AUTH_ENDPOINT || '/auth'}/login/user/`,
+            LOGIN_ADMIN: `${import.meta.env.VITE_API_AUTH_ENDPOINT || '/auth'}/login/admin/`,
+            LOGIN_REFRESH: `${import.meta.env.VITE_API_AUTH_ENDPOINT || '/auth'}/login/refresh/`,
+            LOGOUT: `${import.meta.env.VITE_API_AUTH_ENDPOINT || '/auth'}/logout/`,
+            REGISTER: `${import.meta.env.VITE_API_AUTH_ENDPOINT || '/auth'}/register/user/`,
+        }
+
+    }
+};
+
+// Configuration des headers par défaut
+const getDefaultHeaders = () => {
+  const headers = {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+  };
+  
+  // Ajouter le token d'authentification si disponible
+  const token = getAuthToken();
+  if (token) {
+    const headerName = import.meta.env.VITE_JWT_HEADER_NAME || 'Authorization';
+    const prefix = import.meta.env.VITE_JWT_PREFIX || 'Bearer';
+    headers[headerName] = `${prefix} ${token}`;
+  }
+  
+  return headers;
+};
+
+// Récupération du token d'authentification
+const getAuthToken = () => {
+  try {
+    const authData = localStorage.getItem('zamazu_auth');
+    if (authData) {
+      const parsed = JSON.parse(authData);
+      return parsed.token?.access;
+    }
+  } catch (error) {
+    console.error('Erreur lors de la récupération du token:', error);
+  }
+  return null;
+};
+
+// Vérification de la validité du token
+const isTokenValid = () => {
+  try {
+    const authData = localStorage.getItem('zamazu_auth');
+    if (authData) {
+      const parsed = JSON.parse(authData);
+      // Calculer l'expiration basée sur le timestamp de sauvegarde et access_expires_in
+      const savedTime = parsed.savedAt || Date.now();
+      const expiresIn = (parsed.token?.access_expires_in || 3600) * 1000; // convertir en ms
+      return Date.now() < (savedTime + expiresIn);
+    }
+  } catch (error) {
+    console.error('Erreur lors de la vérification du token:', error);
+  }
+  return false;
+};
+
+// Classe principale pour les requêtes API
+class ApiService {
+  constructor() {
+    this.baseURL = API_CONFIG.BASE_URL;
+    this.timeout = API_CONFIG.TIMEOUT;
+  }
+
+  // Méthode générique pour les requêtes
+  async request(endpoint, options = {}) {
+    const url = `${this.baseURL}${endpoint}`;
+    const config = {
+      method: 'GET',
+      timeout: this.timeout,
+      ...options
+    };
+
+    // Définir les headers seulement si ce n'est pas FormData
+    if (!(config.body instanceof FormData)) {
+      // Ne pas inclure l'auth token si skipAuth est true
+      if (config.skipAuth) {
+        config.headers = {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          ...options.headers
+        };
+      } else {
+        config.headers = {
+          ...getDefaultHeaders(),
+          ...options.headers
+        };
+      }
+    } else {
+      // Pour FormData, on garde seulement les headers d'auth sans Content-Type (sauf si skipAuth)
+      config.headers = {};
+      if (!config.skipAuth) {
+        const token = getAuthToken();
+        if (token) {
+          const headerName = import.meta.env.VITE_JWT_HEADER_NAME || 'Authorization';
+          const prefix = import.meta.env.VITE_JWT_PREFIX || 'Bearer';
+          config.headers[headerName] = `${prefix} ${token}`;
+        }
+      }
+    }
+
+    try {
+      console.log(`🌐 API Request: ${config.method} ${url}`);
+      
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), this.timeout);
+      
+      const response = await fetch(url, {
+        ...config,
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
+      
+      // Vérifier si la réponse est ok
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      
+      // Essayer de parser en JSON
+      const contentType = response.headers.get('content-type');
+      let data;
+      
+      if (contentType && contentType.includes('application/json')) {
+        data = await response.json();
+      } else {
+        data = await response.text();
+      }
+      
+      console.log(`✅ API Response: ${config.method} ${url}`, data);
+      return data;
+      
+    } catch (error) {
+      console.error(`❌ API Error: ${config.method} ${url}`, error);
+      
+      if (error.name === 'AbortError') {
+        throw new Error('Timeout: La requête a pris trop de temps');
+      }
+      
+      if (error.message.includes('401')) {
+        // Token expiré ou invalide
+        this.clearAuth();
+        throw new Error('Session expirée, veuillez vous reconnecter');
+      }
+      
+      throw error;
+    }
+  }
+
+  // Méthodes HTTP spécifiques
+  async get(endpoint, params = {}) {
+    const queryString = new URLSearchParams(params).toString();
+    const url = queryString ? `${endpoint}?${queryString}` : endpoint;
+    return this.request(url, { method: 'GET' });
+  }
+
+  async post(endpoint, data = {}, options = {}) {
+    const config = {
+      method: 'POST'
+    };
+    
+    // Si c'est FormData, ne pas stringify et laisser le navigateur définir le Content-Type
+    if (data instanceof FormData) {
+      config.body = data;
+      // Ne pas définir Content-Type, le navigateur le fera avec boundary
+    } else {
+      config.body = JSON.stringify(data);
+    }
+    
+    // Passer les options à la méthode request
+    return this.request(endpoint, { ...config, ...options });
+  }
+
+  async put(endpoint, data = {}) {
+    return this.request(endpoint, {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    });
+  }
+
+  async delete(endpoint) {
+    return this.request(endpoint, { method: 'DELETE' });
+  }
+
+  async uploadFile(endpoint, formData) {
+    const headers = getDefaultHeaders();
+    delete headers['Content-Type']; // Laisser le navigateur définir le Content-Type pour FormData
+    
+    return this.request(endpoint, {
+      method: 'POST',
+      headers,
+      body: formData
+    });
+  }
+
+  // Gestion de l'authentification
+  setAuthToken(tokenData) {
+    try {
+      const dataToStore = {
+        ...tokenData,
+        savedAt: Date.now()
+      };
+      localStorage.setItem('zamazu_auth', JSON.stringify(dataToStore));
+    } catch (error) {
+      console.error('Erreur lors de la sauvegarde du token:', error);
+    }
+  }
+
+  clearAuth() {
+    try {
+      localStorage.removeItem('zamazu_auth');
+    } catch (error) {
+      console.error('Erreur lors de la suppression du token:', error);
+    }
+  }
+
+  isAuthenticated() {
+    return getAuthToken() && isTokenValid();
+  }
+
+  getCurrentUser() {
+    try {
+      const authData = localStorage.getItem('zamazu_auth');
+      if (authData) {
+        const parsed = JSON.parse(authData);
+        return parsed.user;
+      }
+    } catch (error) {
+      console.error('Erreur lors de la récupération de l\'utilisateur:', error);
+    }
+    return null;
+  }
+}
+
+// Instance singleton du service API
+const apiService = new ApiService();
+
+// Services spécialisés pour chaque domaine
+export const authAPI = {
+  // Connexion utilisateur
+  loginUser: async (credentials) => {
+    const response = await apiService.post(API_CONFIG.ENDPOINTS.AUTH.LOGIN_USER, {
+      email: credentials.email,
+      password: credentials.password
+    }, { skipAuth: true }); // Skip authentication for login
+    return response;
+  },
+
+  // Connexion admin
+  loginAdmin: async (credentials) => {
+    const response = await apiService.post(API_CONFIG.ENDPOINTS.AUTH.LOGIN_ADMIN, {
+      email: credentials.email,
+      password: credentials.password
+    }, { skipAuth: true }); // Skip authentication for login
+    return response;
+  },
+
+  // Inscription utilisateur
+  registerUser: async (userData) => {
+    // S'assurer que le username est présent
+    const dataToSend = {
+      ...userData,
+      username: userData.username || userData.email
+    };
+    return apiService.post(API_CONFIG.ENDPOINTS.AUTH.REGISTER, dataToSend, { skipAuth: true });
+  },
+
+  // Déconnexion
+  logout: () => {
+    apiService.clearAuth();
+  },
+
+  // Profil utilisateur
+  getProfile: async (token) => {
+    return apiService.get(`${API_CONFIG.ENDPOINTS.AUTH.PROFILE}/${token}/`);
+  },
+
+  updateProfile: async (token, data) => {
+    return apiService.put(`${API_CONFIG.ENDPOINTS.AUTH.PROFILE}/update/${token}/`, data);
+  },
+
+  // Demandes d'inscription
+  getRequests: async () => {
+    return apiService.get(API_CONFIG.ENDPOINTS.AUTH.REQUESTS);
+  },
+
+  // Gestion des utilisateurs (Admin only)
+  getUsers: async () => {
+    return apiService.get(API_CONFIG.ENDPOINTS.AUTH.USERS_LIST);
+  },
+
+  getUserDetail: async (token) => {
+    return apiService.get(`${API_CONFIG.ENDPOINTS.AUTH.USER_DETAIL}/${token}/`);
+  },
+
+  updateUser: async (token, userData) => {
+    return apiService.put(`${API_CONFIG.ENDPOINTS.AUTH.USER_UPDATE}/${token}/`, userData);
+  },
+
+  deleteUser: async (token) => {
+    return apiService.delete(`${API_CONFIG.ENDPOINTS.AUTH.USER_DELETE}/${token}/`);
+  }
+};
+
+// Utilitaires pour les erreurs API
+export const handleApiError = (error, defaultMessage = 'Une erreur est survenue') => {
+  console.error('API Error:', error);
+  
+  if (error.message.includes('Session expirée')) {
+    return {
+      type: 'auth_error',
+      message: 'Votre session a expiré. Veuillez vous reconnecter.',
+      shouldRedirect: true
+    };
+  }
+  
+  if (error.message.includes('Timeout')) {
+    return {
+      type: 'timeout_error',
+      message: 'La requête a pris trop de temps. Vérifiez votre connexion.',
+      shouldRetry: true
+    };
+  }
+  
+  if (error.message.includes('400')) {
+    return {
+      type: 'validation_error',
+      message: 'Données invalides. Vérifiez vos informations.',
+      shouldRetry: false
+    };
+  }
+  
+  if (error.message.includes('500')) {
+    return {
+      type: 'server_error',
+      message: 'Erreur du serveur. Veuillez réessayer plus tard.',
+      shouldRetry: true
+    };
+  }
+  
+  return {
+    type: 'unknown_error',
+    message: defaultMessage,
+    shouldRetry: false
+  };
+};
+
+// Export du service principal
+export default apiService;
+
+// Export des utilitaires
+export { getAuthToken, isTokenValid };

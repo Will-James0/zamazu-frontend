@@ -84,7 +84,7 @@ const NavigationHeader = () => {
             
             {/* Bouton CTA */}
             <button 
-              onClick={() => window.location.href = "#discography"}
+              onClick={() => window.location.href = "/auth"}
               className="ml-2 group relative overflow-hidden"
             >
               <div className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-gradient-to-r from-red-600/10 to-green-600/5 border border-gray-800 group-hover:border-red-500/40 transition-colors">

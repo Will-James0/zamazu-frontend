@@ -3,8 +3,8 @@ import './App.css'
 
 function App() {
   return (
-    <div>      
-      <main style={{ padding: '20px' }}>
+    <div>
+      <main>
         <Outlet />
       </main>
     </div>

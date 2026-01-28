@@ -17,8 +17,56 @@ import MemberLogin from '../pages/auth/MemberLogin'
 import StaffLogin from '../pages/auth/StaffLogin'
 import Register from '../pages/auth/Register'
 
+// User pages
+import Welcome from '../pages/user/Welcome'
+
+// Staff pages
+import Dashboard from '../pages/staff/Dashboard'
+
 // Configuration des routes similaire à Vue Router
 const routes = [
+  {
+    path: '/auth',
+    component: AuthHome,
+    meta: {
+      title: 'Authentification'
+    },
+  },
+  {
+    path: '/auth/member-login',
+    component: MemberLogin,
+    meta: {
+      title: 'Connexion Membre'
+    }
+  },
+  {
+    path: '/auth/staff-login',
+    component: StaffLogin,
+    meta: {
+      title: 'Connexion Staff'
+    }
+  },
+  {
+    path: '/auth/register',
+    component: Register,
+    meta: {
+      title: 'Inscription'
+    }
+  },
+  {
+    path: '/user/welcome',
+    component: Welcome,
+    meta: {
+      title: 'Bienvenue'
+    }
+  },
+  {
+    path: '/staff/dashboard',
+    component: Dashboard,
+    meta: {
+      title: 'Dashboard Staff'
+    }
+  },
   {
     path: '/',
     component: App,
@@ -63,34 +111,6 @@ const routes = [
         ]
       },
     ]
-  },
-  {
-    path: '/auth',
-    component: AuthHome,
-    meta: {
-      title: 'Authentification'
-    }
-  },
-  {
-    path: '/auth/member-login',
-    component: MemberLogin,
-    meta: {
-      title: 'Connexion Membre'
-    }
-  },
-  {
-    path: '/auth/staff-login',
-    component: StaffLogin,
-    meta: {
-      title: 'Connexion Staff'
-    }
-  },
-  {
-    path: '/auth/register',
-    component: Register,
-    meta: {
-      title: 'Inscription'
-    }
   },
   {
     path: '*',

@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { ArrowLeft, Mail, Lock, ShieldCheck } from 'lucide-react'
+import { loginStaff } from '@/libs/authService'
 
 export default function StaffLogin() {
   const navigate = useNavigate()
@@ -14,6 +15,7 @@ export default function StaffLogin() {
     password: ''
   })
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -25,11 +27,23 @@ export default function StaffLogin() {
       return
     }
 
-    // TODO: Implémenter la logique de connexion staff
-    console.log('Connexion staff:', formData)
-    
-    // Exemple de navigation après connexion réussie
-    // navigate('/admin/dashboard')
+    setLoading(true)
+    try {
+      const response = await loginStaff({
+        email: formData.email,
+        password: formData.password
+      })
+      
+      // Sauvegarder les données d'authentification
+      localStorage.setItem('zamazu_auth', JSON.stringify(response))
+      
+      // Navigation vers le dashboard admin
+      navigate('/staff/dashboard')
+    } catch (err) {
+      setError(err.message || 'Erreur lors de la connexion')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleChange = (e) => {
@@ -110,8 +124,8 @@ export default function StaffLogin() {
                 </AlertDescription>
               </Alert>
 
-              <Button type="submit" className="w-full bg-purple-600 hover:bg-purple-700 text-white">
-                Se connecter
+              <Button type="submit" className="w-full bg-purple-600 hover:bg-purple-700 text-white" disabled={loading}>
+                {loading ? 'Connexion en cours...' : 'Se connecter'}
               </Button>
             </form>
           </CardContent>

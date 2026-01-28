@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { ArrowLeft, User, Mail, Phone, Lock, UserCircle } from 'lucide-react'
+import { registerUser } from '@/libs/authService'
 
 export default function Register() {
   const navigate = useNavigate()
@@ -19,10 +20,13 @@ export default function Register() {
     confirmPassword: ''
   })
   const [errors, setErrors] = useState({})
+  const [loading, setLoading] = useState(false)
+  const [successMessage, setSuccessMessage] = useState('')
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setErrors({})
+    setSuccessMessage('')
 
     // Validation
     const newErrors = {}
@@ -43,11 +47,29 @@ export default function Register() {
       return
     }
 
-    // TODO: Implémenter la logique d'inscription
-    console.log('Inscription:', formData)
-    
-    // Exemple de navigation après inscription réussie
-    // navigate('/auth/member-login')
+    setLoading(true)
+    try {
+      await registerUser({
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        username: formData.username,
+        email: formData.email,
+        phone: formData.phone,
+        password: formData.password,
+        confirmPassword: formData.confirmPassword
+      })
+      
+      setSuccessMessage('Inscription réussie ! Redirection vers la connexion...')
+      
+      // Redirection après 2 secondes
+      setTimeout(() => {
+        navigate('/auth/member-login')
+      }, 2000)
+    } catch (err) {
+      setErrors({ general: err.message || 'Erreur lors de l\'inscription' })
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleChange = (e) => {
@@ -85,6 +107,20 @@ export default function Register() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Message de succès */}
+              {successMessage && (
+                <Alert className="bg-green-500/10 border-green-500/50">
+                  <AlertDescription className="text-green-500">{successMessage}</AlertDescription>
+                </Alert>
+              )}
+
+              {/* Message d'erreur global */}
+              {errors.general && (
+                <Alert variant="destructive">
+                  <AlertDescription>{errors.general}</AlertDescription>
+                </Alert>
+              )}
+
               {/* Nom et Prénom */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -227,8 +263,8 @@ export default function Register() {
                 )}
               </div>
 
-              <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white">
-                Créer mon compte
+              <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white" disabled={loading}>
+                {loading ? 'Inscription en cours...' : 'Créer mon compte'}
               </Button>
 
               <div className="text-sm text-center text-gray-400">

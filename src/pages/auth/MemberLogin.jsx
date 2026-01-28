@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { ArrowLeft, Mail, Lock } from 'lucide-react'
+import { loginMember } from '@/libs/authService'
 
 export default function MemberLogin() {
   const navigate = useNavigate()
@@ -14,6 +15,7 @@ export default function MemberLogin() {
     password: ''
   })
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -25,11 +27,23 @@ export default function MemberLogin() {
       return
     }
 
-    // TODO: Implémenter la logique de connexion
-    console.log('Connexion membre:', formData)
-    
-    // Exemple de navigation après connexion réussie
-    // navigate('/dashboard')
+    setLoading(true)
+    try {
+      const response = await loginMember({
+        email: formData.email,
+        password: formData.password
+      })
+      
+      // Sauvegarder les données d'authentification
+      localStorage.setItem('zamazu_auth', JSON.stringify(response))
+      
+      // Navigation après connexion réussie
+      navigate('/user/welcome')
+    } catch (err) {
+      setError(err.message || 'Erreur lors de la connexion')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleChange = (e) => {
@@ -100,8 +114,8 @@ export default function MemberLogin() {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white">
-                Se connecter
+              <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white" disabled={loading}>
+                {loading ? 'Connexion en cours...' : 'Se connecter'}
               </Button>
             </form>
           </CardContent>
