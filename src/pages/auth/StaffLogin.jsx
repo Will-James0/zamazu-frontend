@@ -54,7 +54,7 @@ export default function StaffLogin() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-purple-900/20 to-black p-4">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-gray-900 via-purple-900/20 to-black p-4">
       <div className="w-full max-w-md">
         <Button
           variant="ghost"

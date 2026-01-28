@@ -52,8 +52,8 @@ const DiscographySection = () => {
         <div className="absolute bottom-1/3 right-1/4 w-64 h-64 bg-green-500/2 rounded-full blur-3xl" />
         
         {/* Lignes architecturales subtiles */}
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-500/10 to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-green-500/10 to-transparent" />
+        <div className="absolute top-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-red-500/10 to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-green-500/10 to-transparent" />
       </div>
 
       {/* Contenu */}
@@ -89,7 +89,7 @@ const DiscographySection = () => {
               {/* Carte avec design logo-like */}
               <div className={`
                 relative rounded-xl border ${project.borderColor} 
-                bg-gradient-to-b from-black/80 to-gray-900/20
+                bg-linear-to-b from-black/80 to-gray-900/20
                 backdrop-blur-sm
                 transition-all duration-500 ease-out
                 group-hover:border-red-400/40
@@ -98,7 +98,7 @@ const DiscographySection = () => {
               `}>
                 
                 {/* Effet de highlight au survol */}
-                <div className="absolute inset-0 bg-gradient-to-br from-red-500/0 via-transparent to-green-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                <div className="absolute inset-0 bg-linear-to-br from-red-500/0 via-transparent to-green-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
                 {/* Contenu */}
                 <div className="relative p-6 md:p-8 flex flex-col h-full">
@@ -133,7 +133,7 @@ const DiscographySection = () => {
                   </div>
 
                   {/* Description */}
-                  <p className="text-gray-300 text-sm md:text-base leading-relaxed tracking-wide mb-8 flex-grow font-light">
+                  <p className="text-gray-300 text-sm md:text-base leading-relaxed tracking-wide mb-8 grow font-light">
                     {project.description}
                   </p>
 
@@ -203,10 +203,10 @@ const DiscographySection = () => {
 
 <Button 
   size="lg"
-  className="group relative overflow-hidden bg-gradient-to-r from-black to-gray-900 border border-gray-800 hover:border-red-500/50"
+  className="group relative overflow-hidden bg-linear-to-r from-black to-gray-900 border border-gray-800 hover:border-red-500/50"
   onClick={() => window.location.href = "/discography/all"} // ← NOUVEAU
 >
-  <div className="absolute inset-0 bg-gradient-to-r from-red-600/0 via-red-600/10 to-green-600/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+  <div className="absolute inset-0 bg-linear-to-r from-red-600/0 via-red-600/10 to-green-600/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
   <div className="relative flex items-center gap-3 px-6 py-4">
     <Disc className="w-4 h-4" />
     <span className="text-sm tracking-widest">VOIR TOUT</span>
@@ -228,8 +228,7 @@ const DiscographySection = () => {
                 size="lg"
                 className="text-gray-400 hover:text-white border-0"
               >
-                <Music className="w-4 h-4 mr-2" />
-                <span className="text-sm">Exclusivités</span>
+                
               </Button>
             </div>
           </div>
