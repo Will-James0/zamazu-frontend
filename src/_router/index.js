@@ -17,6 +17,15 @@ import AuthHome from '../pages/auth/AuthHome'
 import MemberLogin from '../pages/auth/MemberLogin'
 import StaffLogin from '../pages/auth/StaffLogin'
 import Register from '../pages/auth/Register'
+import DiscographySection from '../components/DiscographySection'
+// AJOUTE CETTE LIGNE ICI :
+console.log("DEBUG AllProjectsPage:", AllProjectsPage);
+
+// User pages
+import Welcome from '../pages/user/Welcome'
+
+// Staff pages
+import Dashboard from '../pages/staff/Dashboard'
 
 // Configuration des routes similaire à Vue Router
 const routes = [
