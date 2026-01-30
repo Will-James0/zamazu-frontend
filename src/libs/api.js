@@ -11,6 +11,45 @@ export const API_CONFIG = {
             LOGIN_REFRESH: `${import.meta.env.VITE_API_AUTH_ENDPOINT || '/auth'}/login/refresh/`,
             LOGOUT: `${import.meta.env.VITE_API_AUTH_ENDPOINT || '/auth'}/logout/`,
             REGISTER: `${import.meta.env.VITE_API_AUTH_ENDPOINT || '/auth'}/register/user/`,
+        },
+
+        MUSIC : {
+            ALBUM : {
+                LIST: `${import.meta.env.VITE_API_MUSIC_ENDPOINT || '/music'}/albums/list/`,
+                CREATE: `${import.meta.env.VITE_API_MUSIC_ENDPOINT || '/music'}/albums/create/`,
+                DETAIL: `${import.meta.env.VITE_API_MUSIC_ENDPOINT || '/music'}/albums/detail`, // Append /:albumToken/
+                UPDATE: `${import.meta.env.VITE_API_MUSIC_ENDPOINT || '/music'}/albums/update`, // Append /:albumToken/
+                DELETE: `${import.meta.env.VITE_API_MUSIC_ENDPOINT || '/music'}/albums/delete`, // Append /:albumToken/
+            },
+
+            CLIP : {
+                LIST: `${import.meta.env.VITE_API_MUSIC_ENDPOINT || '/music'}/clips/list/`,
+                CREATE: `${import.meta.env.VITE_API_MUSIC_ENDPOINT || '/music'}/clips/create/`,
+                DETAIL: `${import.meta.env.VITE_API_MUSIC_ENDPOINT || '/music'}/clips/detail`, // Append /:clipToken/
+                UPDATE: `${import.meta.env.VITE_API_MUSIC_ENDPOINT || '/music'}/clips/update`, // Append /:clipToken/
+                DELETE: `${import.meta.env.VITE_API_MUSIC_ENDPOINT || '/music'}/clips/delete`, // Append /:clipToken/
+            },
+            
+            TRACK : {
+                LIST: `${import.meta.env.VITE_API_MUSIC_ENDPOINT || '/music'}/tracks/list/`,
+                CREATE: `${import.meta.env.VITE_API_MUSIC_ENDPOINT || '/music'}/tracks/create/`,
+                DETAIL: `${import.meta.env.VITE_API_MUSIC_ENDPOINT || '/music'}/tracks/detail`, // Append /:trackToken/
+                UPDATE: `${import.meta.env.VITE_API_MUSIC_ENDPOINT || '/music'}/tracks/update`, // Append /:trackToken/
+                DELETE: `${import.meta.env.VITE_API_MUSIC_ENDPOINT || '/music'}/tracks/delete`, // Append /:trackToken/
+            }
+        },
+
+        USER : {
+            LIST: `${import.meta.env.VITE_API_USER_ENDPOINT || '/user'}/users/list/`,
+            CREATE: `${import.meta.env.VITE_API_USER_ENDPOINT || '/user'}/users/create/`,
+            DETAIL: `${import.meta.env.VITE_API_USER_ENDPOINT || '/user'}/users/detail`, // Append /:userToken/
+            UPDATE: `${import.meta.env.VITE_API_USER_ENDPOINT || '/user'}/users/update`, // Append /:userToken/
+            DELETE: `${import.meta.env.VITE_API_USER_ENDPOINT || '/user'}/users/delete`, // Append /:userToken/
+
+            PROFILE : {
+                GET: `${import.meta.env.VITE_API_USER_ENDPOINT || '/user'}/profile`, // Append /:userToken/
+                UPDATE: `${import.meta.env.VITE_API_USER_ENDPOINT || '/user'}/profile/update`, // Append /:userToken/
+            }
         }
 
     }
@@ -278,37 +317,107 @@ export const authAPI = {
   // Déconnexion
   logout: () => {
     apiService.clearAuth();
+  }
+};
+
+// Services pour la gestion de la musique
+export const musicAPI = {
+  // Albums
+  getAlbums: async () => {
+    return apiService.get(API_CONFIG.ENDPOINTS.MUSIC.ALBUM.LIST);
   },
 
+  createAlbum: async (albumData) => {
+    return apiService.post(API_CONFIG.ENDPOINTS.MUSIC.ALBUM.CREATE, albumData);
+  },
+
+  getAlbumDetail: async (albumToken) => {
+    return apiService.get(`${API_CONFIG.ENDPOINTS.MUSIC.ALBUM.DETAIL}/${albumToken}/`);
+  },
+
+  updateAlbum: async (albumToken, albumData) => {
+    return apiService.put(`${API_CONFIG.ENDPOINTS.MUSIC.ALBUM.UPDATE}/${albumToken}/`, albumData);
+  },
+
+  deleteAlbum: async (albumToken) => {
+    return apiService.delete(`${API_CONFIG.ENDPOINTS.MUSIC.ALBUM.DELETE}/${albumToken}/`);
+  },
+
+  // Clips
+  getClips: async () => {
+    return apiService.get(API_CONFIG.ENDPOINTS.MUSIC.CLIP.LIST);
+  },
+
+  createClip: async (clipData) => {
+    return apiService.post(API_CONFIG.ENDPOINTS.MUSIC.CLIP.CREATE, clipData);
+  },
+
+  getClipDetail: async (clipToken) => {
+    return apiService.get(`${API_CONFIG.ENDPOINTS.MUSIC.CLIP.DETAIL}/${clipToken}/`);
+  },
+
+  updateClip: async (clipToken, clipData) => {
+    return apiService.put(`${API_CONFIG.ENDPOINTS.MUSIC.CLIP.UPDATE}/${clipToken}/`, clipData);
+  },
+
+  deleteClip: async (clipToken) => {
+    return apiService.delete(`${API_CONFIG.ENDPOINTS.MUSIC.CLIP.DELETE}/${clipToken}/`);
+  },
+
+  // Tracks
+  getTracks: async () => {
+    return apiService.get(API_CONFIG.ENDPOINTS.MUSIC.TRACK.LIST);
+  },
+
+  createTrack: async (trackData) => {
+    return apiService.post(API_CONFIG.ENDPOINTS.MUSIC.TRACK.CREATE, trackData);
+  },
+
+  getTrackDetail: async (trackToken) => {
+    return apiService.get(`${API_CONFIG.ENDPOINTS.MUSIC.TRACK.DETAIL}/${trackToken}/`);
+  },
+
+  updateTrack: async (trackToken, trackData) => {
+    return apiService.put(`${API_CONFIG.ENDPOINTS.MUSIC.TRACK.UPDATE}/${trackToken}/`, trackData);
+  },
+
+  deleteTrack: async (trackToken) => {
+    return apiService.delete(`${API_CONFIG.ENDPOINTS.MUSIC.TRACK.DELETE}/${trackToken}/`);
+  }
+}
+
+
+
+// Services pour la gestion des utilisateurs
+export const userAPI = {
   // Profil utilisateur
   getProfile: async (token) => {
-    return apiService.get(`${API_CONFIG.ENDPOINTS.AUTH.PROFILE}/${token}/`);
+    return apiService.get(`${API_CONFIG.ENDPOINTS.USER.PROFILE.GET}/${token}/`);
   },
 
   updateProfile: async (token, data) => {
-    return apiService.put(`${API_CONFIG.ENDPOINTS.AUTH.PROFILE}/update/${token}/`, data);
-  },
-
-  // Demandes d'inscription
-  getRequests: async () => {
-    return apiService.get(API_CONFIG.ENDPOINTS.AUTH.REQUESTS);
+    return apiService.put(`${API_CONFIG.ENDPOINTS.USER.PROFILE.UPDATE}/${token}/`, data);
   },
 
   // Gestion des utilisateurs (Admin only)
   getUsers: async () => {
-    return apiService.get(API_CONFIG.ENDPOINTS.AUTH.USERS_LIST);
+    return apiService.get(API_CONFIG.ENDPOINTS.USER.LIST);
+  },
+
+  creataUser: async (userData) => {
+    return apiService.post(API_CONFIG.ENDPOINTS.USER.CREATE, userData);
   },
 
   getUserDetail: async (token) => {
-    return apiService.get(`${API_CONFIG.ENDPOINTS.AUTH.USER_DETAIL}/${token}/`);
+    return apiService.get(`${API_CONFIG.ENDPOINTS.USER.DETAIL}/${token}/`);
   },
 
   updateUser: async (token, userData) => {
-    return apiService.put(`${API_CONFIG.ENDPOINTS.AUTH.USER_UPDATE}/${token}/`, userData);
+    return apiService.put(`${API_CONFIG.ENDPOINTS.USER.UPDATE}/${token}/`, userData);
   },
 
   deleteUser: async (token) => {
-    return apiService.delete(`${API_CONFIG.ENDPOINTS.AUTH.USER_DELETE}/${token}/`);
+    return apiService.delete(`${API_CONFIG.ENDPOINTS.USER.DELETE}/${token}/`);
   }
 };
 
