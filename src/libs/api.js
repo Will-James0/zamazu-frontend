@@ -45,6 +45,7 @@ export const API_CONFIG = {
             DETAIL: `${import.meta.env.VITE_API_USER_ENDPOINT || '/user'}/users/detail`, // Append /:userToken/
             UPDATE: `${import.meta.env.VITE_API_USER_ENDPOINT || '/user'}/users/update`, // Append /:userToken/
             DELETE: `${import.meta.env.VITE_API_USER_ENDPOINT || '/user'}/users/delete`, // Append /:userToken/
+            DASHBOARD: `${import.meta.env.VITE_API_USER_ENDPOINT || '/user'}/dashboard/`,
 
             PROFILE : {
                 GET: `${import.meta.env.VITE_API_USER_ENDPOINT || '/user'}/profile`, // Append /:userToken/
