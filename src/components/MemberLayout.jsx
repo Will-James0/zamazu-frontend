@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Home, Music, Video, LogOut } from 'lucide-react'
-import logoImg from '@/assets/images/logo.jpeg'
+import { Home, Music, Video, LogOut, Menu, X } from 'lucide-react'
+import logoImg from '@/assets/images/logo.png'
 import { useAuth } from '@/_store/auth'
 
 export default function MemberLayout({ children }) {
@@ -11,6 +11,7 @@ export default function MemberLayout({ children }) {
   const location = useLocation()
   const logout = useAuth((state) => state.logout)
   const user = useAuth((state) => state.user)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   const handleLogout = () => {
     logout()
@@ -27,12 +28,30 @@ export default function MemberLayout({ children }) {
 
   return (
     <div className="flex h-screen bg-gradient-to-br from-gray-900 via-purple-900/20 to-gray-900 text-white">
+      {/* Mobile Header */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-md border-b border-white/10">
+        <div className="flex items-center justify-between p-4">
+          <div className="flex items-center gap-3">
+            <img src={logoImg} alt="Zamazu Logo" className="w-12 h-12 rounded-lg" />
+            <h1 className="font-bold text-lg">Zamazu</h1>
+          </div>
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="p-2 rounded-lg hover:bg-white/10 transition-colors"
+          >
+            {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
+        </div>
+      </div>
+
       {/* Sidebar */}
-      <aside className="w-64 bg-black/40 backdrop-blur-md border-r border-white/10 flex flex-col">
+      <aside className={`fixed lg:static inset-y-0 left-0 z-40 w-64 bg-black/40 backdrop-blur-md border-r border-white/10 flex flex-col transform transition-transform duration-300 lg:transform-none ${
+        isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+      }`}>
         {/* Logo */}
         <div className="p-6 border-b border-white/10">
           <div className="flex items-center gap-3">
-            <img src={logoImg} alt="Zamazu Logo" className="w-10 h-10 rounded-lg" />
+            <img src={logoImg} alt="Zamazu Logo" className="w-14 h-14 rounded-lg" />
             <div>
               <h1 className="font-bold text-lg">Zamazu</h1>
               <Badge className="bg-purple-500/20 text-purple-300 text-xs">Membre</Badge>
@@ -47,7 +66,10 @@ export default function MemberLayout({ children }) {
             return (
               <button
                 key={item.id}
-                onClick={() => navigate(item.path)}
+                onClick={() => {
+                  navigate(item.path)
+                  setIsMobileMenuOpen(false)
+                }}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
                   isActive(item.path)
                     ? 'bg-purple-600 text-white'
@@ -94,8 +116,16 @@ export default function MemberLayout({ children }) {
         </div>
       </aside>
 
+      {/* Overlay pour mobile */}
+      {isMobileMenuOpen && (
+        <div
+          className="lg:hidden fixed inset-0 bg-black/50 z-30"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
       {/* Main Content */}
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-auto pt-16 lg:pt-0">
         {children}
       </div>
     </div>

@@ -1,7 +1,6 @@
 import NavigationHeader from "@/components/NavigationHeader";
 import HeroSection from "@/components/HeroSection";
 import AboutSection from "@/components/AboutSection";
-import DiscographySection from "@/components/DiscographySection";
 import FooterSection from "@/components/FooterSection";
 
 function Home() {
@@ -11,7 +10,6 @@ function Home() {
       <main>
         <HeroSection />
         <AboutSection />
-        <DiscographySection />
       </main>
       <FooterSection />
     </div>

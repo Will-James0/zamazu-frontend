@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { ArrowLeft, Mail, Lock, ShieldCheck } from 'lucide-react'
 import { useAuth } from '@/_store/auth'
@@ -145,6 +145,14 @@ export default function StaffLogin() {
               </Button>
             </form>
           </CardContent>
+          <CardFooter className="flex flex-col space-y-4">
+            <div className="text-sm text-center text-gray-400">
+              Vous êtes membre ?{' '}
+              <Link to="/auth/member-login" className="text-blue-500 hover:text-blue-400 transition-colors font-medium">
+                Connectez-vous ici
+              </Link>
+            </div>
+          </CardFooter>
         </Card>
       </div>
     </div>

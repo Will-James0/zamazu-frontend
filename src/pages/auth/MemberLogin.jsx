@@ -157,6 +157,12 @@ export default function MemberLogin() {
             >
               Créer un compte
             </Button>
+            <div className="text-sm text-center text-gray-400">
+              Vous êtes staff ?{' '}
+              <Link to="/auth/staff-login" className="text-purple-500 hover:text-purple-400 transition-colors font-medium">
+                Connectez-vous ici
+              </Link>
+            </div>
           </CardFooter>
         </Card>
       </div>

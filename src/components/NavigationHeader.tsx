@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Menu, X, Music2, Sparkles, Zap } from "lucide-react";
+import { Menu, X, Sparkles, Zap } from "lucide-react";
+import logoImg from '@/assets/images/logo.png';
 
 const NavigationHeader = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -16,8 +17,6 @@ const NavigationHeader = () => {
   const navLinks = [
     { label: "Accueil", href: "#", icon: "⚡" },
     { label: "Biographie", href: "#about", icon: "🎵" },
-    { label: "Discographie", href: "#discography", icon: "🎶" },
-    { label: "Contact", href: "#contact", icon: "📬" },
   ];
 
   return (
@@ -39,13 +38,11 @@ const NavigationHeader = () => {
           {/* Logo */}
           <a href="#" className="flex items-center gap-2 group">
             <div className="relative">
-              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-md bg-linear-to-br from-red-500/20 to-green-500/10 flex items-center justify-center border border-red-500/30 group-hover:border-red-500/50 transition-colors">
-                <Music2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-400" />
-              </div>
-              <div className="absolute -top-1 -right-1 flex gap-0.5">
-                <div className="w-1 h-1 bg-red-500 rounded-full animate-pulse" />
-                <div className="w-1 h-1 bg-green-500 rounded-full animate-pulse delay-100" />
-              </div>
+              <img 
+                src={logoImg} 
+                alt="Zamazu Logo" 
+                className="w-10 h-10 sm:w-12 sm:h-12 rounded-md group-hover:scale-110 transition-transform duration-300"
+              />
             </div>
             <span className="text-base sm:text-lg font-medium text-white">
               <span className="text-red-400">Z</span>
@@ -129,7 +126,7 @@ const NavigationHeader = () => {
               <button
                 onClick={() => {
                   setIsMobileMenuOpen(false);
-                  window.location.href = "#discography";
+                  window.location.href = "/auth";
                 }}
                 className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-linear-to-r from-red-600/20 to-green-600/10 border border-red-500/30 hover:border-red-500/50 transition-colors group"
               >

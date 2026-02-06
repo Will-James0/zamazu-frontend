@@ -105,7 +105,7 @@ const HeroSection = () => {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
-          <button className="group relative overflow-hidden" onClick={() => window.location.href = "#discography"}>
+          <button className="group relative overflow-hidden" onClick={() => window.location.href = "/auth"}>
             <div className="relative flex items-center gap-3 px-8 py-4 rounded-xl bg-linear-to-r from-red-700 to-rose-700 hover:from-red-600 hover:to-rose-600 transition-all group-hover:scale-105">
               <Play className="w-6 h-6" />
               <span className="text-base font-semibold tracking-wide">ACTIVER L'ÉNERGIE</span>
@@ -113,29 +113,13 @@ const HeroSection = () => {
             </div>
           </button>
           
-          <button className="group relative" onClick={() => window.location.href = "#about"}>
+          <button className="group relative" onClick={() => window.location.href = "/auth"}>
             <div className="flex items-center gap-3 px-8 py-4 rounded-xl border-2 border-gray-800 bg-linear-to-r from-gray-900/60 to-black/60 hover:border-emerald-500/50 hover:bg-linear-to-r hover:from-gray-900/80 hover:to-black/80 transition-all group-hover:scale-105">
               <Music2 className="w-6 h-6 text-gray-400 group-hover:text-emerald-400" />
               <span className="text-base text-gray-300 group-hover:text-white font-medium">EXPLORER L'UNIVERS</span>
               <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-all" />
             </div>
           </button>
-        </div>
-
-        <div className="max-w-2xl mx-auto grid grid-cols-3 gap-6">
-          {[
-            { value: "7", label: "ANS", color: "red", w: "w-[85%]" },
-            { value: "10+", label: "PROJETS", color: "emerald", w: "w-[92%]" },
-            { value: "25M+", label: "STREAMS", color: "red", w: "w-[78%]" }
-          ].map((stat, i) => (
-            <div key={i} className="bg-linear-to-b from-gray-900/30 to-black/30 rounded-xl p-4 border border-gray-800/50">
-              <div className={`text-3xl font-bold mb-2 ${stat.color === 'red' ? 'text-red-400' : 'text-emerald-400'}`}>{stat.value}</div>
-              <div className="text-xs text-gray-500 tracking-widest uppercase mb-3">{stat.label}</div>
-              <div className="h-1 bg-gray-800 rounded-full overflow-hidden">
-                <div className={`h-full ${stat.color === 'red' ? 'bg-red-500' : 'bg-emerald-500'} ${stat.w}`} />
-              </div>
-            </div>
-          ))}
         </div>
       </div>
 

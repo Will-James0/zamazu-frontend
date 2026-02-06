@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { UserCircle, ShieldCheck } from 'lucide-react'
+import { UserCircle, ShieldCheck, ArrowLeft } from 'lucide-react'
 
 export default function AuthHome() {
   const navigate = useNavigate()
@@ -9,6 +9,15 @@ export default function AuthHome() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-gray-900 via-gray-800 to-black p-4">
       <div className="w-full max-w-4xl">
+        <Button
+          variant="ghost"
+          onClick={() => navigate('/')}
+          className="mb-4 text-gray-400 hover:text-white"
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Retour à l'accueil
+        </Button>
+        
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-2">Bienvenue</h1>
           <p className="text-gray-400">Choisissez votre type de connexion</p>
