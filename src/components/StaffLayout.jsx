@@ -82,7 +82,10 @@ export default function StaffLayout({ children }) {
 
         {/* User Profile Section */}
         <div className="p-4 border-t border-white/10 space-y-3">
-          <div className="flex items-center gap-3 px-2">
+          <button
+            onClick={() => navigate('/staff/profile')}
+            className="w-full flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-white/5 transition-all"
+          >
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold overflow-hidden">
               {user?.image ? (
                 <img 
@@ -94,11 +97,11 @@ export default function StaffLayout({ children }) {
                 <span>{user?.username?.[0]?.toUpperCase() || 'S'}</span>
               )}
             </div>
-            <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-0 text-left">
               <p className="font-medium text-sm truncate">{user?.username || 'Staff'}</p>
               <p className="text-xs text-gray-400 truncate">{roleLabels[getUserRole()] || 'Staff'}</p>
             </div>
-          </div>
+          </button>
           <Button
             onClick={handleLogout}
             variant="outline"
