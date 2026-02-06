@@ -172,44 +172,6 @@ export async function logoutUser() {
   }
 }
 
-/**
- * Récupération du profil utilisateur actuel
- * @returns {Promise<Object>} Profil utilisateur
- */
-export async function fetchUserProfile() {
-  try {
-    const response = await authAPI.getProfile();
-    return response.data || response;
-  } catch (error) {
-    console.error('Erreur lors de la récupération du profil:', error);
-    
-    if (error.response?.status === 401) {
-      throw new Error('Session expirée. Veuillez vous reconnecter.');
-    }
-    
-    throw new Error('Impossible de charger le profil utilisateur.');
-  }
-}
-
-/**
- * Mise à jour du profil utilisateur
- * @param {Object} profileData - Nouvelles données du profil
- * @returns {Promise<Object>} Profil mis à jour
- */
-export async function updateUserProfile(profileData) {
-  try {
-    const response = await authAPI.updateProfile(profileData);
-    return response.data || response;
-  } catch (error) {
-    console.error('Erreur lors de la mise à jour du profil:', error);
-    
-    if (error.response?.data?.message) {
-      throw new Error(error.response.data.message);
-    }
-    
-    throw new Error('Impossible de mettre à jour le profil.');
-  }
-}
 
 /**
  * Changement de mot de passe
@@ -340,28 +302,6 @@ export function useAuthAPI() {
       }
     },
 
-    // Opérations de profil
-    async loadProfile() {
-      try {
-        const profile = await fetchUserProfile();
-        return profile;
-      } catch (error) {
-        notify.error(error.message);
-        throw error;
-      }
-    },
-
-    async saveProfile(profileData) {
-      try {
-        const result = await updateUserProfile(profileData);
-        notify.success('Profil mis à jour avec succès');
-        return result;
-      } catch (error) {
-        notify.error(error.message);
-        throw error;
-      }
-    },
-
     async changePassword(passwordData) {
       try {
         await changePassword(passwordData);
@@ -392,6 +332,21 @@ export function useAuthAPI() {
         console.error('Erreur lors de la vérification du statut:', error);
         return { isAuthenticated: false, user: null };
       }
+    },
+
+    async refreshToken() {
+      try {
+        const response = await authAPI.refreshToken();
+        return {
+          access: response.access,
+          refresh: response.refresh,
+          access_expires_in: response.access_expires_in,
+          refresh_expires_in: response.refresh_expires_in,
+        };
+      } catch (error) {
+        console.error('Erreur lors du rafraîchissement du token:', error);
+        throw new Error('Impossible de rafraîchir le token.');
+      }
     }
   };
 }
@@ -400,8 +355,6 @@ export default {
   loginMember,
   registerUser,
   logoutUser,
-  fetchUserProfile,
-  updateUserProfile,
   changePassword,
   requestPasswordReset,
   checkAuthStatus,

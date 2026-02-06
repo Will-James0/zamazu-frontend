@@ -1,65 +1,78 @@
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { LayoutDashboard, Users, Music, Video, Heart, Eye, MessageCircle, LogOut, UserPlus, Plus, Home } from 'lucide-react'
-import { useState } from 'react'
-import logoImg from '@/assets/images/logo.jpeg'
+import { LayoutDashboard, Users, Music, Video, Heart, Eye, MessageCircle, UserPlus } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { userAPI } from '@/lib/api'
+import { useToast } from '@/hooks/use-toast'
+import StaffLayout from '@/components/StaffLayout'
 
 export default function Dashboard() {
   const navigate = useNavigate()
-  const [activeMenu, setActiveMenu] = useState('dashboard')
+  const { toast } = useToast()
+  const [dashboardData, setDashboardData] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
 
-  const handleLogout = () => {
-    localStorage.removeItem('zamazu_auth')
-    navigate('/auth/staff-login')
+  useEffect(() => {
+    fetchDashboardData()
+  }, [])
+
+  const fetchDashboardData = async () => {
+    try {
+      setIsLoading(true)
+      const data = await userAPI.getDashboard()
+      setDashboardData(data)
+    } catch (error) {
+      console.error('Erreur lors de la récupération des données:', error)
+      toast({
+        title: 'Erreur',
+        description: 'Impossible de charger les données du dashboard',
+        variant: 'destructive'
+      })
+    } finally {
+      setIsLoading(false)
+    }
   }
-
-  const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'users', label: 'Utilisateurs', icon: Users },
-    { id: 'music', label: 'Musiques', icon: Music },
-    { id: 'videos', label: 'Clips', icon: Video },
-  ]
 
   const statsCards = [
     {
       title: 'Total Utilisateurs',
-      value: '0',
+      value: dashboardData?.counts?.users || '0',
       icon: Users,
       description: 'Membres inscrits',
       color: 'text-blue-600'
     },
     {
       title: 'Musiques',
-      value: '0',
+      value: dashboardData?.counts?.tracks || '0',
       icon: Music,
       description: 'Morceaux publiés',
       color: 'text-purple-600'
     },
     {
       title: 'Clips',
-      value: '0',
+      value: dashboardData?.counts?.clips || '0',
       icon: Video,
       description: 'Vidéos publiées',
       color: 'text-pink-600'
     },
     {
       title: 'Total Likes',
-      value: '0',
+      value: dashboardData?.counts?.likes || '0',
       icon: Heart,
       description: 'Likes sur tous contenus',
       color: 'text-red-600'
     },
     {
       title: 'Total Vues',
-      value: '0',
+      value: dashboardData?.counts?.views || '0',
       icon: Eye,
       description: 'Vues sur tous contenus',
       color: 'text-green-600'
     },
     {
       title: 'Commentaires',
-      value: '0',
+      value: dashboardData?.counts?.comments || '0',
       icon: MessageCircle,
       description: 'Interactions utilisateurs',
       color: 'text-yellow-600'
@@ -67,69 +80,18 @@ export default function Dashboard() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex">
-      {/* Sidebar */}
-      <aside className="w-64 bg-black/30 backdrop-blur-sm border-r border-white/10 flex flex-col">
-        {/* Logo */}
-        <div className="p-6 border-b border-white/10">
-          <div className="flex items-center gap-3">
-            <img src={logoImg} alt="Logo" className="w-12 h-12 rounded-lg object-cover" />
-            <div>
-              <h2 className="text-white font-bold text-lg">Zamazu</h2>
-              <p className="text-gray-400 text-xs">Dashboard Staff</p>
-            </div>
+    <StaffLayout>
+      {/* Header */}
+      <header className="bg-black/30 backdrop-blur-sm border-b border-white/10">
+        <div className="px-8 py-4">
+          <div className="flex items-center gap-2">
+            <LayoutDashboard className="h-6 w-6 text-purple-400" />
+            <h1 className="text-xl font-bold text-white">Dashboard</h1>
           </div>
         </div>
+      </header>
 
-        {/* Menu Navigation */}
-        <nav className="flex-1 p-4">
-          <div className="space-y-2">
-            {menuItems.map((item) => {
-              const Icon = item.icon
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => setActiveMenu(item.id)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
-                    activeMenu === item.id
-                      ? 'bg-purple-600 text-white'
-                      : 'text-gray-400 hover:bg-white/5 hover:text-white'
-                  }`}
-                >
-                  <Icon className="h-5 w-5" />
-                  <span className="font-medium">{item.label}</span>
-                </button>
-              )
-            })}
-          </div>
-        </nav>
-
-        {/* Bouton Déconnexion */}
-        <div className="p-4 border-t border-white/10">
-          <Button
-            onClick={handleLogout}
-            variant="outline"
-            className="w-full border-red-500/50 text-red-400 hover:bg-red-500/10"
-          >
-            <LogOut className="h-4 w-4 mr-2" />
-            Déconnexion
-          </Button>
-        </div>
-      </aside>
-
-      {/* Main Content */}
-      <div className="flex-1 overflow-auto">
-        {/* Header */}
-        <header className="bg-black/30 backdrop-blur-sm border-b border-white/10">
-          <div className="px-8 py-4">
-            <div className="flex items-center gap-2">
-              <LayoutDashboard className="h-6 w-6 text-purple-400" />
-              <h1 className="text-xl font-bold text-white">Dashboard</h1>
-            </div>
-          </div>
-        </header>
-
-        <main className="p-8">
+      <main className="p-8">
         {/* Welcome Section */}
         <div className="mb-8">
           <h2 className="text-3xl font-bold text-white mb-2">
@@ -165,43 +127,8 @@ export default function Dashboard() {
           })}
         </div>
 
-        {/* Quick Actions */}
-        <Card className="bg-white/5 backdrop-blur-sm border-white/10">
-          <CardHeader>
-            <CardTitle className="text-white">Actions Rapides</CardTitle>
-            <CardDescription className="text-gray-400">
-              Accédez rapidement aux fonctionnalités principales
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Button 
-                variant="outline" 
-                className="h-auto py-4 flex flex-col items-center gap-2 border-purple-500/30 hover:bg-purple-500/10"
-              >
-                <Users className="h-6 w-6 text-purple-400" />
-                <span className="text-white">Gérer Utilisateurs</span>
-              </Button>
-              <Button 
-                variant="outline" 
-                className="h-auto py-4 flex flex-col items-center gap-2 border-blue-500/30 hover:bg-blue-500/10"
-              >
-                <Music className="h-6 w-6 text-blue-400" />
-                <span className="text-white">Ajouter Musique</span>
-              </Button>
-              <Button 
-                variant="outline" 
-                className="h-auto py-4 flex flex-col items-center gap-2 border-pink-500/30 hover:bg-pink-500/10"
-              >
-                <Video className="h-6 w-6 text-pink-400" />
-                <span className="text-white">Ajouter Clip</span>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
         {/* Activités Récentes */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           {/* Nouveaux Abonnés */}
           <Card className="bg-white/5 backdrop-blur-sm border-white/10">
             <CardHeader>
@@ -215,17 +142,42 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
-                      <Users className="h-5 w-5 text-white" />
+                {isLoading ? (
+                  <div className="flex items-center justify-center p-6">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
+                  </div>
+                ) : dashboardData?.latest?.users && dashboardData.latest.users.length > 0 ? (
+                  dashboardData.latest.users.map((user, index) => (
+                    <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                          <Users className="h-5 w-5 text-white" />
+                        </div>
+                        <div>
+                          <p className="text-white font-medium">{user.username}</p>
+                          <p className="text-xs text-gray-400">{user.email}</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xs text-gray-400">
+                          {new Date(user.date_joined).toLocaleDateString('fr-FR')}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-white font-medium">Aucun membre</p>
-                      <p className="text-xs text-gray-400">En attente d'inscriptions</p>
+                  ))
+                ) : (
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                        <Users className="h-5 w-5 text-white" />
+                      </div>
+                      <div>
+                        <p className="text-white font-medium">Aucun membre</p>
+                        <p className="text-xs text-gray-400">En attente d'inscriptions</p>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -243,23 +195,85 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
-                      <Music className="h-5 w-5 text-white" />
+                {isLoading ? (
+                  <div className="flex items-center justify-center p-6">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
+                  </div>
+                ) : dashboardData?.latest?.tracks && dashboardData.latest.tracks.length > 0 ? (
+                  dashboardData.latest.tracks.map((track, index) => (
+                    <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
+                          <Music className="h-5 w-5 text-white" />
+                        </div>
+                        <div>
+                          <p className="text-white font-medium">{track.title}</p>
+                          <p className="text-xs text-gray-400">{track.artist}</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xs text-gray-400">
+                          {new Date(track.created_at).toLocaleDateString('fr-FR')}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-white font-medium">Aucune musique</p>
-                      <p className="text-xs text-gray-400">Ajoutez votre premier morceau</p>
+                  ))
+                ) : (
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
+                        <Music className="h-5 w-5 text-white" />
+                      </div>
+                      <div>
+                        <p className="text-white font-medium">Aucune musique</p>
+                        <p className="text-xs text-gray-400">Ajoutez votre premier morceau</p>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             </CardContent>
           </Card>
         </div>
+
+        {/* Quick Actions */}
+        <Card className="bg-white/5 backdrop-blur-sm border-white/10">
+          <CardHeader>
+            <CardTitle className="text-white">Actions Rapides</CardTitle>
+            <CardDescription className="text-gray-400">
+              Accédez rapidement aux fonctionnalités principales
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Button 
+                variant="outline" 
+                className="h-auto py-4 flex flex-col items-center gap-2 border-purple-500/30 hover:bg-purple-500/10"
+                onClick={() => navigate('/staff/users')}
+              >
+                <Users className="h-6 w-6 text-purple-400" />
+                <span className="text-white">Gérer Utilisateurs</span>
+              </Button>
+              <Button 
+                variant="outline" 
+                className="h-auto py-4 flex flex-col items-center gap-2 border-blue-500/30 hover:bg-blue-500/10"
+                onClick={() => navigate('/staff/tracks')}
+              >
+                <Music className="h-6 w-6 text-blue-400" />
+                <span className="text-white">Gérer Musiques</span>
+              </Button>
+              <Button 
+                variant="outline" 
+                className="h-auto py-4 flex flex-col items-center gap-2 border-pink-500/30 hover:bg-pink-500/10"
+                onClick={() => navigate('/staff/clips')}
+              >
+                <Video className="h-6 w-6 text-pink-400" />
+                <span className="text-white">Gérer Clips</span>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </main>
-      </div>
-    </div>
+    </StaffLayout>
   )
 }

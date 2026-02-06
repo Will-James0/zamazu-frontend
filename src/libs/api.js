@@ -77,6 +77,17 @@ const getDefaultHeaders = () => {
 // Récupération du token d'authentification
 const getAuthToken = () => {
   try {
+    // Essayer d'abord depuis le localStorage géré par Zustand persist
+    const authStorage = localStorage.getItem('auth-storage');
+    if (authStorage) {
+      const parsed = JSON.parse(authStorage);
+      const accessToken = parsed.state?.accessToken;
+      if (accessToken) {
+        return accessToken;
+      }
+    }
+    
+    // Fallback vers l'ancien format pour compatibilité
     const authData = localStorage.getItem('zamazu_auth');
     if (authData) {
       const parsed = JSON.parse(authData);
@@ -315,6 +326,25 @@ export const authAPI = {
     return apiService.post(API_CONFIG.ENDPOINTS.AUTH.REGISTER, dataToSend, { skipAuth: true });
   },
 
+  refreshToken: async () => {
+    // Récupérer le refresh token depuis localStorage
+    const authData = localStorage.getItem('zamazu_auth');
+    if (!authData) {
+      throw new Error('Aucun refresh token trouvé');
+    }
+    
+    const parsed = JSON.parse(authData);
+    const refreshToken = parsed.token?.refresh;
+    
+    if (!refreshToken) {
+      throw new Error('Refresh token manquant');
+    }
+    
+    return apiService.post(API_CONFIG.ENDPOINTS.AUTH.LOGIN_REFRESH, {
+      refresh: refreshToken
+    }, { skipAuth: true });
+  },
+
   // Déconnexion
   logout: () => {
     apiService.clearAuth();
@@ -405,6 +435,10 @@ export const userAPI = {
     return apiService.get(API_CONFIG.ENDPOINTS.USER.LIST);
   },
 
+  getAllUsers: async () => {
+    return apiService.get(API_CONFIG.ENDPOINTS.USER.LIST);
+  },
+
   creataUser: async (userData) => {
     return apiService.post(API_CONFIG.ENDPOINTS.USER.CREATE, userData);
   },
@@ -417,8 +451,13 @@ export const userAPI = {
     return apiService.put(`${API_CONFIG.ENDPOINTS.USER.UPDATE}/${token}/`, userData);
   },
 
-  deleteUser: async (token) => {
-    return apiService.delete(`${API_CONFIG.ENDPOINTS.USER.DELETE}/${token}/`);
+  deleteUser: async (userId) => {
+    return apiService.delete(`${API_CONFIG.ENDPOINTS.USER.DELETE}/${userId}/`);
+  },
+
+  // Dashboard
+  getDashboard: async () => {
+    return apiService.get(API_CONFIG.ENDPOINTS.USER.DASHBOARD);
   }
 };
 

@@ -6,10 +6,12 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { ArrowLeft, Mail, Lock, ShieldCheck } from 'lucide-react'
-import { loginStaff } from '@/libs/authService'
+import { useAuth } from '@/_store/auth'
+import { loginStaff } from '@/lib/authService'
 
 export default function StaffLogin() {
   const navigate = useNavigate()
+  const setUser = useAuth((state) => state.setUser)
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -29,14 +31,28 @@ export default function StaffLogin() {
 
     setLoading(true)
     try {
-      const response = await loginStaff({
+      const { user, token } = await loginStaff({
         email: formData.email,
         password: formData.password
       })
+
+      console.log('👤 Utilisateur connecté:', user)
+      console.log('🔑 Tokens reçus:', { 
+        hasAccess: !!token.access, 
+        hasRefresh: !!token.refresh 
+      })
+
+      setUser(user, {
+        accessToken: token.access,
+        refreshToken: token.refresh,
+        accessExpiresIn: token.access_expires_in,
+        refreshExpiresIn: token.refresh_expires_in
+      })
       
-      // Sauvegarder les données d'authentification
-      localStorage.setItem('zamazu_auth', JSON.stringify(response))
+      // Attendre un court instant pour s'assurer que le store persist a terminé
+      await new Promise(resolve => setTimeout(resolve, 100))
       
+      console.log('✅ Navigation vers dashboard')
       // Navigation vers le dashboard admin
       navigate('/staff/dashboard')
     } catch (err) {

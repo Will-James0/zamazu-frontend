@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { ArrowLeft, User, Mail, Phone, Lock, UserCircle } from 'lucide-react'
-import { registerUser } from '@/libs/authService'
+import { registerUser } from '@/lib/authService'
 
 export default function Register() {
   const navigate = useNavigate()
@@ -35,7 +35,7 @@ export default function Register() {
     if (!formData.lastName) newErrors.lastName = 'Le nom est requis'
     if (!formData.username) newErrors.username = "Le nom d'utilisateur est requis"
     if (!formData.email) newErrors.email = "L'email est requis"
-    if (!formData.phone) newErrors.phone = 'Le téléphone est requis'
+    // if (!formData.phone) newErrors.phone = 'Le téléphone est requis'
     if (!formData.password) newErrors.password = 'Le mot de passe est requis'
     if (formData.password.length < 8) newErrors.password = 'Le mot de passe doit contenir au moins 8 caractères'
     if (formData.password !== formData.confirmPassword) {

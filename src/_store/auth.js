@@ -1,15 +1,17 @@
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
-import Cookies from 'js-cookie';
 import { useEffect } from 'react';
 import { 
     loginMember,
     loginStaff,
     registerUser,
-    logoutUser, 
+    logoutUser
+ } from '../lib/authService.js';
+import { 
     fetchUserProfile, 
     updateUserProfile 
- } from '../libs/authervice.js'
+ } from '../lib/userService.js';
+import { getMediaUrl } from '../lib/api.js';
 
  // Store Zustand équivalent au store Pinia avec intégration API
 export const useAuth = create()(
@@ -21,58 +23,38 @@ export const useAuth = create()(
                 isLoading: false,
                 accessToken: null,
                 refreshToken: null,
+                accessExpiresAt: null,
+                refreshExpiresAt: null,
 
                 loadUser: () => {
-                    const userData = Cookies.get('auth');
-                    const accessToken = Cookies.get('access_token');
-                    const refreshToken = Cookies.get('refresh_token');
-
-                    if (userData && accessToken) {
-                        try {
-                            const user = JSON.parse(userData);
-                            set({
-                                user,
-                                accessToken,
-                                refreshToken
-                            }, false, 'loadUser');
-                        } catch (error) {
-                          console.error('Erreur lors du chargement de l\'utilisateur:', error);
-                          get().clearUser();
-                        }
-                    }
+                    // Le middleware persist gère automatiquement le chargement depuis localStorage
+                    // Cette fonction est conservée pour compatibilité mais ne fait plus rien
+                    console.log('\ud83d\udd04 Store hydraté depuis localStorage');
                 },
 
                 setUser: (userData, tokens = {}) => {
-                    const { accessToken, refreshToken } = tokens;
+                    const { accessToken, refreshToken, accessExpiresIn, refreshExpiresIn } = tokens;
+                    
+                    // Calculer les timestamps d'expiration si les durées sont fournies
+                    const now = Math.floor(Date.now() / 1000); // timestamp en secondes
+                    const accessExpiresAt = accessExpiresIn ? now + accessExpiresIn : get().accessExpiresAt;
+                    const refreshExpiresAt = refreshExpiresIn ? now + refreshExpiresIn : get().refreshExpiresAt;
+
+                    // Transformer l'URL de l'image de profil si présente
+                    const userWithFullUrls = userData ? {
+                        ...userData,
+                        image: userData.image ? getMediaUrl(userData.image) : userData.image
+                    } : userData;
 
                     set({
-                        user: userData,
+                        user: userWithFullUrls,
                         accessToken: accessToken || get().accessToken,
-                        refreshToken: refreshToken || get().refreshToken
+                        refreshToken: refreshToken || get().refreshToken,
+                        accessExpiresAt,
+                        refreshExpiresAt
                     }, false, 'setUser');
-
-                    // Stockage sécurisé
-                    Cookies.set('auth', JSON.stringify(userData), { 
-                        expires: 1, 
-                        secure: true,
-                        sameSite: 'strict'
-                    });
                     
-                    if (accessToken) {
-                        Cookies.set('access_token', accessToken, {
-                        expires: 1,
-                        secure: true,
-                        sameSite: 'strict'
-                        });
-                    }
-                    
-                    if (refreshToken) {
-                        Cookies.set('refresh_token', refreshToken, {
-                        expires: 7, // Refresh token plus long
-                        secure: true,
-                        sameSite: 'strict'
-                        });
-                    }
+                    console.log('✅ Tokens enregistrés dans le store', { accessToken: !!accessToken, refreshToken: !!refreshToken });
                 },
 
                 getUser: () => {
@@ -84,12 +66,12 @@ export const useAuth = create()(
                         user: null,
                         accessToken: null,
                         refreshToken: null,
+                        accessExpiresAt: null,
+                        refreshExpiresAt: null,
                         dispensary: null
                     }, false, 'clearUser');
                     
-                    Cookies.remove('auth');
-                    Cookies.remove('access_token');
-                    Cookies.remove('refresh_token');
+                    console.log('🧹 Store nettoyé');
                 },
 
                 setLoading: (loading) => {
@@ -112,7 +94,9 @@ export const useAuth = create()(
 
                         get().setUser(user, {
                             accessToken: token.access,
-                            refreshToken: token.refresh
+                            refreshToken: token.refresh,
+                            accessExpiresIn: token.access_expires_in,
+                            refreshExpiresIn: token.refresh_expires_in
                         });
 
                         // Sauvegarder également dans localStorage pour compatibilité
@@ -163,22 +147,36 @@ export const useAuth = create()(
                     try {
                         set({ isLoading: true }, false, 'update-profile-start');
                         
-                        const updatedUser = await updateUserProfile(profileData);
+                        const user = get().user;
+                        console.log('📝 updateProfile - user actuel:', user);
                         
-                        // Mise à jour locale
+                        if (!user) {
+                            throw new Error('Aucun utilisateur connecté');
+                        }
+                        
+                        // Vérifier si user.code existe, sinon utiliser user.id ou user.username
+                        const userIdentifier = user.code || user.id || user.username;
+                        
+                        if (!userIdentifier) {
+                            console.error('❌ Impossible de trouver un identifiant utilisateur:', user);
+                            throw new Error('Identifiant utilisateur manquant');
+                        }
+                        
+                        console.log('📝 Mise à jour du profil avec identifiant:', userIdentifier);
+                        const updatedUser = await updateUserProfile(userIdentifier, profileData);
+                        
+                        // Transformer l'URL de l'image de profil
+                        const updatedUserWithFullUrls = {
+                            ...updatedUser,
+                            image: updatedUser.image ? getMediaUrl(updatedUser.image) : updatedUser.image
+                        };
+                        
+                        // Mise à jour locale - préserver les tokens
                         set(state => ({
-                            user: { ...state.user, ...updatedUser }
+                            user: { ...state.user, ...updatedUserWithFullUrls }
                         }), false, 'update-profile');
                         
-                        // Mise à jour des cookies
-                        const newUserData = { ...get().user, ...updatedUser };
-                        Cookies.set('auth', JSON.stringify(newUserData), { 
-                        expires: 1, 
-                        secure: true,
-                        sameSite: 'strict'
-                        });
-                        
-                        return updatedUser;
+                        return updatedUserWithFullUrls;
                     } finally {
                         set({ isLoading: false }, false, 'update-profile-end');
                     }
@@ -186,20 +184,39 @@ export const useAuth = create()(
 
                 refreshProfile: async () => {
                     try {
-                        const profile = await fetchUserProfile();
+                        const user = get().user;
+                        console.log('🔄 refreshProfile - user actuel:', user);
                         
-                        set({ user: profile }, false, 'refresh-profile');
+                        if (!user) {
+                            throw new Error('Aucun utilisateur connecté');
+                        }
                         
-                        Cookies.set('auth', JSON.stringify(profile), { 
-                        expires: 1, 
-                        secure: true,
-                        sameSite: 'strict'
-                        });
+                        // Vérifier si user.code existe, sinon utiliser user.id ou user.username
+                        const userIdentifier = user.code || user.id || user.username;
                         
-                        return profile;
+                        if (!userIdentifier) {
+                            console.error('❌ Impossible de trouver un identifiant utilisateur:', user);
+                            throw new Error('Identifiant utilisateur manquant');
+                        }
+                        
+                        console.log('🔄 Rafraîchissement du profil avec identifiant:', userIdentifier);
+                        const profile = await fetchUserProfile(userIdentifier);
+                        
+                        // Transformer l'URL de l'image de profil
+                        const profileWithFullUrls = {
+                            ...profile,
+                            image: profile.image ? getMediaUrl(profile.image) : profile.image
+                        };
+                        
+                        // Mettre à jour seulement les données utilisateur, pas les tokens
+                        set(state => ({
+                            user: { ...state.user, ...profileWithFullUrls }
+                        }), false, 'refresh-profile');
+                        
+                        return profileWithFullUrls;
                     } catch (error) {
                         // Si le profil ne peut pas être chargé, déconnecter
-                        get().clearUser();
+                        console.error('Erreur lors du rafraîchissement du profil:', error);
                         throw error;
                     }
                 },
@@ -227,11 +244,11 @@ export const useAuth = create()(
                 },
 
                 isAdmin: () => {
-                    return get().user?.role.code === 'admin';
+                    return get().user?.role.code === 'administrator';
                 },
 
                 isStaff: () => {
-                    return get().user?.role.code === 'staff';
+                    return get().user?.role.code === 'moderator';
                 },
 
                 isMember: () => {
@@ -244,6 +261,14 @@ export const useAuth = create()(
 
                 getRefreshToken: () => {
                     return get().refreshToken;
+                },
+
+                getAccessExpiresAt: () => {
+                    return get().accessExpiresAt;
+                },
+
+                getRefreshExpiresAt: () => {
+                    return get().refreshExpiresAt;
                 }
             }),
             {
@@ -252,7 +277,9 @@ export const useAuth = create()(
                 partialize: (state) => ({
                     user: state.user,
                     accessToken: state.accessToken,
-                    refreshToken: state.refreshToken
+                    refreshToken: state.refreshToken,
+                    accessExpiresAt: state.accessExpiresAt,
+                    refreshExpiresAt: state.refreshExpiresAt
                 }),
 
                 onRehydrateStorage: () => (state) => {

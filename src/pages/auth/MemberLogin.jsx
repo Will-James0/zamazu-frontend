@@ -6,10 +6,12 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { ArrowLeft, Mail, Lock } from 'lucide-react'
-import { loginMember } from '@/libs/authService'
+import { useAuth } from '@/_store/auth'
+import { loginMember } from '@/lib/authService'
 
 export default function MemberLogin() {
   const navigate = useNavigate()
+  const setUser = useAuth((state) => state.setUser)
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -29,16 +31,30 @@ export default function MemberLogin() {
 
     setLoading(true)
     try {
-      const response = await loginMember({
+      const { user, token } = await loginMember({
         email: formData.email,
         password: formData.password
       })
+
+      console.log('👤 Membre connecté:', user)
+      console.log('🔑 Tokens reçus:', { 
+        hasAccess: !!token.access, 
+        hasRefresh: !!token.refresh 
+      })
+
+      setUser(user, {
+        accessToken: token.access,
+        refreshToken: token.refresh,
+        accessExpiresIn: token.access_expires_in,
+        refreshExpiresIn: token.refresh_expires_in
+      })
       
-      // Sauvegarder les données d'authentification
-      localStorage.setItem('zamazu_auth', JSON.stringify(response))
+      // Attendre un court instant pour s'assurer que le store persist a terminé
+      await new Promise(resolve => setTimeout(resolve, 100))
       
+      console.log('✅ Navigation vers member home')
       // Navigation après connexion réussie
-      navigate('/user/welcome')
+      navigate('/member/home')
     } catch (err) {
       setError(err.message || 'Erreur lors de la connexion')
     } finally {
