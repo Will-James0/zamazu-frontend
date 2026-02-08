@@ -7,7 +7,7 @@ const HeroSection = () => {
       
       {/* ARCHITECTURE ÉNERGÉTIQUE */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-linear-to-br from-black via-gray-950/80 to-emerald-950/40" />
+        <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-950/80 to-emerald-950/40" />
         
         {/* Grille énergétique en arrière-plan */}
         <div className="absolute inset-0 opacity-20 bg-energy-grid" />
@@ -24,8 +24,8 @@ const HeroSection = () => {
 
             {/* Source de lumière */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-112.5 h-112.5">
-              <div className="absolute inset-0 bg-linear-to-r from-red-600/50 via-red-500/30 to-emerald-500/40 rounded-full blur-3xl animate-pulse-slow" />
-              <div className="absolute inset-10 bg-linear-to-l from-emerald-600/30 via-green-500/20 to-red-600/30 rounded-full blur-2xl animate-pulse-delayed" />
+              <div className="absolute inset-0 bg-gradient-to-r from-red-600/50 via-red-500/30 to-emerald-500/40 rounded-full blur-3xl animate-pulse-slow" />
+              <div className="absolute inset-10 bg-gradient-to-l from-emerald-600/30 via-green-500/20 to-red-600/30 rounded-full blur-2xl animate-pulse-delayed" />
               
               {/* Rayons lumineux */}
               <div className="absolute inset-0">
@@ -37,11 +37,11 @@ const HeroSection = () => {
             
             {/* SILHOUETTE PRINCIPALE */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-112.5">
-              <div className="absolute inset-0 bg-linear-to-t from-black via-black/90 to-transparent rounded-3xl blur-sm">
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/90 to-transparent rounded-3xl blur-sm">
                 <div className="absolute inset-4 rounded-2xl border border-gray-900/50" />
                 <div className="absolute inset-8 rounded-xl border border-gray-800/30" />
               </div>
-              <div className="absolute -inset-1 bg-linear-to-r from-red-500/40 via-transparent to-emerald-500/40 rounded-3xl blur animate-pulse-slow" />
+              <div className="absolute -inset-1 bg-gradient-to-r from-red-500/40 via-transparent to-emerald-500/40 rounded-3xl blur animate-pulse-slow" />
               
               <div className="absolute -top-10 left-1/2 -translate-x-1/2 flex gap-3">
                 <div className="w-3 h-3 bg-red-500 rounded-full animate-ping shadow-lg shadow-red-500/50" />
@@ -49,8 +49,8 @@ const HeroSection = () => {
                 <div className="w-3 h-3 bg-emerald-500 rounded-full animate-ping shadow-lg shadow-emerald-500/50 delay-300" />
               </div>
               
-              <div className="absolute -left-8 top-1/2 -translate-y-1/2 w-4 h-32 bg-linear-to-b from-red-500 to-emerald-500 rounded-full animate-pulse" />
-              <div className="absolute -right-8 top-1/2 -translate-y-1/2 w-4 h-32 bg-linear-to-b from-emerald-500 to-red-500 rounded-full animate-pulse delay-500" />
+              <div className="absolute -left-8 top-1/2 -translate-y-1/2 w-4 h-32 bg-gradient-to-b from-red-500 to-emerald-500 rounded-full animate-pulse" />
+              <div className="absolute -right-8 top-1/2 -translate-y-1/2 w-4 h-32 bg-gradient-to-b from-emerald-500 to-red-500 rounded-full animate-pulse delay-500" />
             </div>
           </div>
         </div>
@@ -66,27 +66,27 @@ const HeroSection = () => {
       {/* CONTENU PRINCIPAL */}
       <div className="relative z-20 container mx-auto px-4 text-center py-20">
         <div className="inline-flex items-center gap-4 mb-8">
-          <div className="w-3 h-0.5 bg-linear-to-r from-red-600 to-transparent" />
+          <div className="w-3 h-0.5 bg-gradient-to-r from-red-600 to-transparent" />
           <div className="flex items-center gap-2">
             <Radio className="w-4 h-4 text-red-400 animate-pulse" />
             <p className="text-xs sm:text-sm tracking-[0.4em] text-gray-400 uppercase font-light">FRÉQUENCE ÉNERGÉTIQUE</p>
             <Sparkles className="w-4 h-4 text-emerald-400 animate-pulse delay-300" />
           </div>
-          <div className="w-3 h-0.5 bg-linear-to-r from-transparent to-emerald-600" />
+          <div className="w-3 h-0.5 bg-gradient-to-r from-transparent to-emerald-600" />
         </div>
 
         <div className="mb-8">
           <h1 className="text-6xl sm:text-8xl md:text-9xl lg:text-[10rem] font-bold tracking-tighter">
             <span className="relative">
               <span className="text-white relative z-10">ZAMAZU</span>
-              <span className="absolute inset-0 bg-linear-to-r from-red-500 via-red-400 to-emerald-500 bg-clip-text text-transparent animate-gradient-text blur-lg opacity-80">
+              <span className="absolute inset-0 bg-gradient-to-r from-red-500 via-red-400 to-emerald-500 bg-clip-text text-transparent animate-gradient-text blur-lg opacity-80">
                 ZAMAZU
               </span>
             </span>
           </h1>
           
           <div className="relative h-1 w-56 sm:w-80 mx-auto mt-6">
-            <div className="absolute inset-0 bg-linear-to-r from-red-600 via-red-500 to-emerald-600 rounded-full blur-sm animate-pulse-slow" />
+            <div className="absolute inset-0 bg-gradient-to-r from-red-600 via-red-500 to-emerald-600 rounded-full blur-sm animate-pulse-slow" />
             <div className="absolute inset-0 flex">
               {[...Array(20)].map((_, i) => (
                 <div 
@@ -98,26 +98,44 @@ const HeroSection = () => {
           </div>
         </div>
 
-        <div className="max-w-xl mx-auto mb-10 text-gray-300 font-light leading-relaxed">
-          <p className="text-base sm:text-lg">
-            <span className="text-red-300 font-medium">L'énergie condensée</span> en <span className="text-emerald-300 font-medium">forme pure</span>.
+        <div className="max-w-3xl mx-auto mb-8 space-y-4">
+          <p className="text-xl sm:text-2xl md:text-3xl font-medium text-white">
+            Plateforme Musicale Officielle
           </p>
+          <p className="text-base sm:text-lg text-gray-300 font-light leading-relaxed max-w-2xl mx-auto">
+            Découvrez l'univers musical de ZAMAZU : <span className="text-red-300 font-medium">singles, freestyles, projets exclusifs</span> et <span className="text-emerald-300 font-medium">contenus inédits</span>. Une expérience immersive au cœur du rap conscient camerounais.
+          </p>
+        </div>
+
+        {/* Indicateurs de contenu */}
+        <div className="flex flex-wrap gap-3 justify-center mb-10 max-w-2xl mx-auto">
+          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-900/60 border border-gray-800">
+            <Music2 className="w-4 h-4 text-red-400" />
+            <span className="text-sm text-gray-300">Albums & Singles</span>
+          </div>
+          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-900/60 border border-gray-800">
+            <Sparkles className="w-4 h-4 text-emerald-400" />
+            <span className="text-sm text-gray-300">Contenus Exclusifs</span>
+          </div>
+          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-900/60 border border-gray-800">
+            <Zap className="w-4 h-4 text-yellow-400" />
+            <span className="text-sm text-gray-300">Freestyles & Clips</span>
+          </div>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
           <button className="group relative overflow-hidden" onClick={() => window.location.href = "/auth"}>
-            <div className="relative flex items-center gap-3 px-8 py-4 rounded-xl bg-linear-to-r from-red-700 to-rose-700 hover:from-red-600 hover:to-rose-600 transition-all group-hover:scale-105">
+            <div className="relative flex items-center gap-3 px-8 py-4 rounded-xl bg-gradient-to-r from-red-700 to-rose-700 hover:from-red-600 hover:to-rose-600 transition-all group-hover:scale-105 shadow-lg shadow-red-900/50">
               <Play className="w-6 h-6" />
-              <span className="text-base font-semibold tracking-wide">ACTIVER L'ÉNERGIE</span>
-              <Zap className="w-6 h-6 text-yellow-300 animate-bounce" />
+              <span className="text-base font-semibold tracking-wide">ÉCOUTER MAINTENANT</span>
+              <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-all" />
             </div>
           </button>
           
-          <button className="group relative" onClick={() => window.location.href = "/auth"}>
-            <div className="flex items-center gap-3 px-8 py-4 rounded-xl border-2 border-gray-800 bg-linear-to-r from-gray-900/60 to-black/60 hover:border-emerald-500/50 hover:bg-linear-to-r hover:from-gray-900/80 hover:to-black/80 transition-all group-hover:scale-105">
-              <Music2 className="w-6 h-6 text-gray-400 group-hover:text-emerald-400" />
-              <span className="text-base text-gray-300 group-hover:text-white font-medium">EXPLORER L'UNIVERS</span>
-              <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-all" />
+          <button className="group relative" onClick={() => { document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' }); }}>
+            <div className="flex items-center gap-3 px-8 py-4 rounded-xl border-2 border-gray-800 bg-gradient-to-r from-gray-900/60 to-black/60 hover:border-emerald-500/50 hover:bg-gradient-to-r hover:from-gray-900/80 hover:to-black/80 transition-all group-hover:scale-105">
+              <Target className="w-6 h-6 text-gray-400 group-hover:text-emerald-400" />
+              <span className="text-base text-gray-300 group-hover:text-white font-medium">EN SAVOIR PLUS</span>
             </div>
           </button>
         </div>

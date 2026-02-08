@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, X, Sparkles, Zap } from "lucide-react";
+import { Menu, X, Sparkles, Zap, Music2, Briefcase, User } from "lucide-react";
 import logoImg from '@/assets/images/logo.png';
 
 const NavigationHeader = () => {
@@ -15,8 +15,10 @@ const NavigationHeader = () => {
   }, []);
 
   const navLinks = [
-    { label: "Accueil", href: "#", icon: "⚡" },
-    { label: "Biographie", href: "#about", icon: "🎵" },
+    { label: "Accueil", href: "#", icon: Sparkles },
+    { label: "À propos", href: "#about", icon: User },
+    { label: "Réalisations", href: "#realisations", icon: Music2 },
+    { label: "Services", href: "#services", icon: Briefcase },
   ];
 
   return (
@@ -53,23 +55,24 @@ const NavigationHeader = () => {
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-1">
-            {navLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                className="group relative px-3 py-1.5"
-              >
-                <div className="flex items-center gap-1.5">
-                  <span className="text-xs text-gray-400 group-hover:text-red-400 transition-colors">
-                    {link.icon}
-                  </span>
-                  <span className="text-xs font-medium text-gray-300 group-hover:text-white transition-colors">
-                    {link.label}
-                  </span>
-                </div>
-                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 group-hover:w-4/5 h-0.5 bg-linear-to-r from-red-500 to-green-500 rounded-full transition-all duration-300" />
-              </a>
-            ))}
+            {navLinks.map((link) => {
+              const IconComponent = link.icon;
+              return (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  className="group relative px-3 py-1.5"
+                >
+                  <div className="flex items-center gap-1.5">
+                    <IconComponent className="w-3.5 h-3.5 text-gray-400 group-hover:text-red-400 transition-colors" />
+                    <span className="text-xs font-medium text-gray-300 group-hover:text-white transition-colors">
+                      {link.label}
+                    </span>
+                  </div>
+                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 group-hover:w-4/5 h-0.5 bg-linear-to-r from-red-500 to-green-500 rounded-full transition-all duration-300" />
+                </a>
+              );
+            })}
             
             <button 
               onClick={() => window.location.href = "/auth"}
@@ -104,20 +107,23 @@ const NavigationHeader = () => {
         <div className="md:hidden absolute top-full left-0 right-0 bg-black/98 backdrop-blur-xl border-b border-gray-900/30 shadow-xl">
           <div className="container mx-auto px-3 py-3">
             <div className="space-y-1">
-              {navLinks.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-linear-to-r hover:from-red-500/10 hover:to-green-500/5 transition-all group"
-                >
-                  <span className="text-red-400">{link.icon}</span>
-                  <span className="text-sm font-medium text-gray-300 group-hover:text-white transition-colors">
-                    {link.label}
-                  </span>
-                  <div className="ml-auto w-1.5 h-1.5 bg-linear-to-r from-red-500 to-green-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
-                </a>
-              ))}
+              {navLinks.map((link) => {
+                const IconComponent = link.icon;
+                return (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-linear-to-r hover:from-red-500/10 hover:to-green-500/5 transition-all group"
+                  >
+                    <IconComponent className="w-4 h-4 text-red-400" />
+                    <span className="text-sm font-medium text-gray-300 group-hover:text-white transition-colors">
+                      {link.label}
+                    </span>
+                    <div className="ml-auto w-1.5 h-1.5 bg-linear-to-r from-red-500 to-green-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </a>
+                );
+              })}
               
               <div className="my-2 px-4">
                 <div className="h-px bg-linear-to-r from-transparent via-gray-800 to-transparent" />

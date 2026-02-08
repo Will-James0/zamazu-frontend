@@ -1,0 +1,14 @@
+# Ignorer toutes les images dans ce dossier
+*.jpg
+*.jpeg
+*.png
+*.webp
+*.gif
+*.svg
+
+# Mais garder les fichiers de documentation
+!README.md
+!.gitkeep
+
+# Si vous voulez versionner des images spécifiques, décommentez :
+# !exemple.jpg

@@ -70,15 +70,25 @@ const AboutSection = () => {
 
             <div className="space-y-4 sm:space-y-6">
               <p className="text-base sm:text-lg leading-relaxed text-gray-300 font-light">
-                Né à <span className="text-red-300 font-medium">Edéa</span>, au <span className="text-green-300">Cameroun</span>, ZAMAZU incarne la fusion entre tradition et avant-garde.
+                Artiste rap originaire d'<span className="text-red-300 font-medium">Edéa</span>, dans la région du <span className="text-green-300">Littoral (Cameroun)</span>, ZAMAZU est actif sur la scène musicale depuis <span className="text-red-300 font-semibold">7 ans</span>. Il s'impose progressivement comme une voix singulière du rap camerounais, avec une démarche artistique axée sur la conscience, la réflexion et l'élévation de l'esprit.
               </p>
+              
               <p className="text-gray-400 leading-relaxed border-l-2 border-red-500/20 pl-6">
-                Sa musique transcende le simple divertissement pour devenir une expérience sensorielle et intellectuelle. Chaque projet est une exploration des profondeurs de la conscience.
+                Sans revendiquer d'influences directes, ZAMAZU construit un univers personnel, guidé par ce qu'il définit comme <span className="text-red-300 italic">l'éveil musical de l'œuvre d'esprit</span>. À travers ses textes, il explore la pensée, la vision intérieure et la capacité de la musique à éveiller les consciences, tout en restant ancré dans une dynamique moderne et authentique du rap.
               </p>
+              
+              <p className="text-gray-300 leading-relaxed">
+                Au fil de son parcours, il a déjà à son actif <span className="text-green-300 font-medium">trois singles</span>, <span className="text-green-300 font-medium">trois freestyles</span>, ainsi que <span className="text-green-300 font-medium">quatre projets issus de la série "Saï"</span>, témoignant d'une constance artistique et d'une réelle implication dans la création musicale.
+              </p>
+              
+              <p className="text-gray-400 leading-relaxed">
+                Son travail reflète une recherche de profondeur, alliée à une volonté de structuration et de professionnalisation de sa carrière. Au-delà de l'aspect artistique, ZAMAZU inscrit sa démarche dans une <span className="text-red-300 font-medium">vision orientée business et affaires</span>, considérant la musique non seulement comme un moyen d'expression, mais aussi comme un véritable levier économique et entrepreneurial.
+              </p>
+              
               <div className="pt-6 border-t border-gray-800">
-                <p className="text-sm tracking-widest text-gray-500 uppercase font-mono">Philosophie Artistique</p>
+                <p className="text-sm tracking-widest text-gray-500 uppercase font-mono">Philosophie</p>
                 <p className="text-gray-300 mt-2 font-light italic">
-                  "L'art n'est pas ce que l'on voit, mais ce que l'on fait voir aux autres."
+                  Déterminé, discipliné et tourné vers l'avenir, ZAMAZU poursuit son évolution avec l'ambition de marquer durablement le rap camerounais, en conciliant création artistique, conscience et stratégie professionnelle.
                 </p>
               </div>
             </div>
